@@ -117,7 +117,7 @@ dependencies {
 
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.6.2'
 
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.10.0'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.10.3'
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.10.0'
     compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: '2.4.1'
 
