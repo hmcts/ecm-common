@@ -108,7 +108,7 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile group: 'com.google.guava', name: 'guava', version: '23.0'
 
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.6.2'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.7.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
