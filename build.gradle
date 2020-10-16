@@ -118,7 +118,7 @@ dependencies {
         exclude group: 'net.minidev', module: 'json-smart'
     }
 
-    compileOnly 'org.projectlombok:lombok:1.18.12'
+    compileOnly 'org.projectlombok:lombok:1.18.16'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
@@ -129,7 +129,7 @@ dependencies {
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
-    testAnnotationProcessor "org.projectlombok:lombok:1.18.8"
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.16"
 }
 
 jar {
