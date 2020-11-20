@@ -113,7 +113,7 @@ dependencies {
 
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.9.3'
 
-    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.4.0', {
+    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.5.1', {
         exclude group: 'javax.mail', module: 'mail'
         exclude group: 'net.minidev', module: 'json-smart'
     }
