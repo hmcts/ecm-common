@@ -119,7 +119,7 @@ dependencies {
 
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.12.0'
 
-    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.1'
+    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'
     compileOnly 'org.projectlombok:lombok:1.18.18'
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
 
