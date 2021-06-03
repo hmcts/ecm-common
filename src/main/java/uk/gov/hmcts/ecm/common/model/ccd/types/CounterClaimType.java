@@ -6,7 +6,7 @@ import lombok.Data;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class EccCounterClaimType {
+public class CounterClaimType {
 
     @JsonProperty("counterClaim")
     private String counterClaim;

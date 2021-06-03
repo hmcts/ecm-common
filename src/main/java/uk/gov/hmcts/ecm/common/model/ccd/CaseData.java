@@ -125,7 +125,7 @@ public class CaseData {
     @JsonProperty("counterClaim")
     private String counterClaim;
     @JsonProperty("eccCases")
-    private List<EccCounterClaimTypeItem> eccCases;
+    private List<CounterClaimTypeItem> eccCases;
     @JsonProperty("restrictedReporting")
     private RestrictedReportingType restrictedReporting;
     @JsonProperty("printHearingDetails")
