@@ -400,5 +400,5 @@ public class Constants {
     public static final String LETTER_ADDRESS_MANAGING_OFFICE = "Managing Office";
     public static final String LETTER_ADDRESS_ALLOCATED_OFFICE = "Allocated Office";
     public static final String INVALID_LISTING_DATE_RANGE_ERROR_MESSAGE = "Please enter a date range that does not exceed 31 days.";
-
+    public static final String NO_HEARINGS_FOUND_FOR_SEARCH_CRITERIA = "No hearings have been found for your search criteria";
 }
