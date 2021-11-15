@@ -1,5 +1,6 @@
 package uk.gov.hmcts.ecm.common.model.helper;
 
+import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.common.returnsreceiver.qual.This;
 
 import java.time.format.DateTimeFormatter;
@@ -347,6 +348,9 @@ public class Constants {
     public static final String DUPLICATE_JURISDICTION_CODE_ERROR_MESSAGE = "Duplicate Jurisdiction Code(s) : ";
     public static final String MISSING_JURISDICTION_OUTCOME_ERROR_MESSAGE = "A Jurisdiction outcome is required before "
     + "the case can be closed";
+    public static final String JURISDICTION_OUTCOME_NOT_ALLOCATED_ERROR_MESSAGE = "Jurisdiction outcome is set to"
+    + " 'Not allocated'. A Jurisdiction outcome is required before the case can be closed.";
+    public static final String NOT_ALLOCATED = "Not allocated";
     public static final String MISSING_JUDGEMENT_JURISDICTION_MESSAGE = "This case contains a Judgment which does not "
     + "have a jurisdiction attached to it. To enable this case to be closed, please ensure the relevant jurisdiction(s)"
     + " has been linked to the Judgment.";
