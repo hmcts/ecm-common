@@ -478,6 +478,21 @@ public class CcdClient {
         return submitMultipleEvents;
     }
 
+    public List<SubmitMultipleEvent> retrieveMultipleCcdReferenceElasticSearch(String authToken, String caseTypeId,
+                                                                        String multipleReference) throws IOException {
+        List<SubmitMultipleEvent> submitMultipleEvents = new ArrayList<>();
+        String query = ESHelper.getBulkCcdReferenceSearchQuery(multipleReference);
+        log.info("QUERY: " + query);
+        HttpEntity<String> request = new HttpEntity<>(query, buildHeaders(authToken));
+        MultipleCaseSearchResult multipleCaseSearchResult =
+                restTemplate.exchange(ccdClientConfig.buildRetrieveCasesUrlElasticSearch(caseTypeId),
+                        HttpMethod.POST, request, MultipleCaseSearchResult.class).getBody();
+        if (multipleCaseSearchResult != null && multipleCaseSearchResult.getCases() != null) {
+            submitMultipleEvents.addAll(multipleCaseSearchResult.getCases());
+        }
+        return submitMultipleEvents;
+    }
+
     public CCDRequest startEventForCase(String authToken, String caseTypeId, String jurisdiction, String cid)
             throws IOException {
         HttpEntity<String> request =

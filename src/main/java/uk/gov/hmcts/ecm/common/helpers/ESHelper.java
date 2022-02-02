@@ -95,6 +95,11 @@ public class ESHelper {
                 .query(termsQueryBuilder).toString();
     }
 
+    public static String getBulkCcdReferenceSearchQuery(String reference) {
+        return String.format("{\"size\":%s,\"query\":{\"term\":{\"%s\":\"%s\"}}}",
+                MAX_ES_SIZE, "reference", reference);
+    }
+
     public static String getListingVenueAndRangeDateSearchQuery(String dateToSearchFrom, String dateToSearchTo,
                                                                 String venueToSearch, String venueToSearchMapping) {
         BoolQueryBuilder boolQueryBuilder = boolQuery()
