@@ -92,5 +92,14 @@ public class ListingData {
         venueEdinburgh = null;
         clerkResponsible = null;
     }
+
+    public void clearLocalReportFields() {
+        localReportsSummary = null;
+        localReportsSummaryHdr = null;
+        localReportsSummaryHdr2 = null;
+        localReportsSummary2 = null;
+        localReportsDetailHdr = null;
+        localReportsDetail  = null;
+    }
 }
 
