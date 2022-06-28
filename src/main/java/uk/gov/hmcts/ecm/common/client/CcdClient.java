@@ -98,6 +98,17 @@ public class CcdClient {
         return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
     }
 
+    public CCDRequest startCaseCreationTransfer(String authToken,
+                                                uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails)
+        throws IOException {
+        HttpEntity<String> request =
+            new HttpEntity<>(buildHeaders(authToken));
+        String uri = ccdClientConfig.buildStartCaseCreationTransferUrl(userService.getUserDetails(authToken).getUid(),
+            caseDetails.getJurisdiction(),
+            caseDetails.getCaseTypeId());
+        return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
+    }
+
     public CCDRequest startCaseTransfer(String authToken, String caseTypeId, String jurisdiction, String cid)
             throws IOException {
         HttpEntity<String> request =
@@ -113,7 +124,8 @@ public class CcdClient {
                 new HttpEntity<>(buildHeaders(authToken));
         String uri = ccdClientConfig.buildReturnCaseCreationTransferUrl(userService.getUserDetails(authToken).getUid(),
                 jurisdiction, caseTypeId, cid);
-        return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
+        var requestResult = restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
+        return requestResult;
     }
 
     public CCDRequest startCaseMultipleCreation(String authToken, String caseTypeId, String jurisdiction)
@@ -133,7 +145,22 @@ public class CcdClient {
         String uri = ccdClientConfig.buildSubmitCaseCreationUrl(userService.getUserDetails(authToken).getUid(),
                 caseDetails.getJurisdiction(),
                 caseDetails.getCaseTypeId());
-        return restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class).getBody();
+        var submittedCaseCreation = restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class).getBody();
+        return submittedCaseCreation;
+    }
+
+    public SubmitEvent submitCaseCreation(String authToken,
+                                          uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails,
+                                          CCDRequest req)
+        throws IOException {
+        HttpEntity<CaseDataContent> request =
+            new HttpEntity<>(caseDataBuilder.buildCaseDataContent(caseDetails.getCaseData(), req,
+                CREATION_EVENT_SUMMARY), buildHeaders(authToken));
+        String uri = ccdClientConfig.buildSubmitCaseCreationUrl(userService.getUserDetails(authToken).getUid(),
+            caseDetails.getJurisdiction(), caseDetails.getCaseTypeId());
+
+        SubmitEvent submitEventResult = restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class).getBody();
+        return submitEventResult;
     }
 
     public SubmitEvent retrieveCase(String authToken, String caseTypeId, String jurisdiction, String cid)
