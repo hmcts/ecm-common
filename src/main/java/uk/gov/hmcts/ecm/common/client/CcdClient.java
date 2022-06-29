@@ -101,8 +101,7 @@ public class CcdClient {
     public CCDRequest startCaseCreationTransfer(String authToken,
                                                 uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails)
         throws IOException {
-        HttpEntity<String> request =
-            new HttpEntity<>(buildHeaders(authToken));
+        HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
         String uri = ccdClientConfig.buildStartCaseCreationTransferUrl(userService.getUserDetails(authToken).getUid(),
             caseDetails.getJurisdiction(),
             caseDetails.getCaseTypeId());
@@ -111,8 +110,7 @@ public class CcdClient {
 
     public CCDRequest startCaseTransfer(String authToken, String caseTypeId, String jurisdiction, String cid)
             throws IOException {
-        HttpEntity<String> request =
-                new HttpEntity<>(buildHeaders(authToken));
+        HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
         String uri = ccdClientConfig.buildStartCaseTransferUrl(userService.getUserDetails(authToken).getUid(),
                 jurisdiction, caseTypeId, cid);
         return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
@@ -159,7 +157,8 @@ public class CcdClient {
         String uri = ccdClientConfig.buildSubmitCaseCreationUrl(userService.getUserDetails(authToken).getUid(),
             caseDetails.getJurisdiction(), caseDetails.getCaseTypeId());
 
-        SubmitEvent submitEventResult = restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class).getBody();
+        SubmitEvent submitEventResult = restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class)
+                .getBody();
         return submitEventResult;
     }
 
