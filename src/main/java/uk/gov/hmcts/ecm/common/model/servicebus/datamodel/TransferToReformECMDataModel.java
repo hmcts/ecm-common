@@ -19,8 +19,8 @@ public class TransferToReformECMDataModel extends DataModelParent {
     @JsonProperty("officeCT")
     private String officeCT;
 
-    @JsonProperty("positionTypeCT")
-    private String positionTypeCT;
+    @JsonProperty("positionType")
+    private String positionType;
 
     @JsonProperty("ccdGatewayBaseUrl")
     private String ccdGatewayBaseUrl;
