@@ -98,10 +98,19 @@ public class CcdClient {
         return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
     }
 
+    public CCDRequest startCaseCreationTransfer(String authToken,
+                                                uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails)
+        throws IOException {
+        HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
+        String uri = ccdClientConfig.buildStartCaseCreationTransferUrl(userService.getUserDetails(authToken).getUid(),
+            caseDetails.getJurisdiction(),
+            caseDetails.getCaseTypeId());
+        return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
+    }
+
     public CCDRequest startCaseTransfer(String authToken, String caseTypeId, String jurisdiction, String cid)
             throws IOException {
-        HttpEntity<String> request =
-                new HttpEntity<>(buildHeaders(authToken));
+        HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
         String uri = ccdClientConfig.buildStartCaseTransferUrl(userService.getUserDetails(authToken).getUid(),
                 jurisdiction, caseTypeId, cid);
         return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
@@ -133,6 +142,19 @@ public class CcdClient {
         String uri = ccdClientConfig.buildSubmitCaseCreationUrl(userService.getUserDetails(authToken).getUid(),
                 caseDetails.getJurisdiction(),
                 caseDetails.getCaseTypeId());
+        return restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class).getBody();
+    }
+
+    public SubmitEvent submitCaseCreation(String authToken,
+                                          uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails,
+                                          CCDRequest req)
+        throws IOException {
+        HttpEntity<CaseDataContent> request =
+            new HttpEntity<>(caseDataBuilder.buildCaseDataContent(caseDetails.getCaseData(), req,
+                CREATION_EVENT_SUMMARY), buildHeaders(authToken));
+        String uri = ccdClientConfig.buildSubmitCaseCreationUrl(userService.getUserDetails(authToken).getUid(),
+            caseDetails.getJurisdiction(), caseDetails.getCaseTypeId());
+
         return restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class).getBody();
     }
 
