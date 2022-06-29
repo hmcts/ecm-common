@@ -122,8 +122,7 @@ public class CcdClient {
                 new HttpEntity<>(buildHeaders(authToken));
         String uri = ccdClientConfig.buildReturnCaseCreationTransferUrl(userService.getUserDetails(authToken).getUid(),
                 jurisdiction, caseTypeId, cid);
-        var requestResult = restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
-        return requestResult;
+        return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
     }
 
     public CCDRequest startCaseMultipleCreation(String authToken, String caseTypeId, String jurisdiction)
@@ -143,8 +142,7 @@ public class CcdClient {
         String uri = ccdClientConfig.buildSubmitCaseCreationUrl(userService.getUserDetails(authToken).getUid(),
                 caseDetails.getJurisdiction(),
                 caseDetails.getCaseTypeId());
-        var submittedCaseCreation = restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class).getBody();
-        return submittedCaseCreation;
+        return restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class).getBody();
     }
 
     public SubmitEvent submitCaseCreation(String authToken,
@@ -157,9 +155,7 @@ public class CcdClient {
         String uri = ccdClientConfig.buildSubmitCaseCreationUrl(userService.getUserDetails(authToken).getUid(),
             caseDetails.getJurisdiction(), caseDetails.getCaseTypeId());
 
-        SubmitEvent submitEventResult = restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class)
-                .getBody();
-        return submitEventResult;
+        return restTemplate.exchange(uri, HttpMethod.POST, request, SubmitEvent.class).getBody();
     }
 
     public SubmitEvent retrieveCase(String authToken, String caseTypeId, String jurisdiction, String cid)
