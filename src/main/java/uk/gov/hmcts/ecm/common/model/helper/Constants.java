@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Constants {
-    
+
     private Constants() {
     }
 
@@ -272,6 +272,7 @@ public class Constants {
     public static final String POSITION_TYPE_CASE_INPUT_IN_ERROR = "Case input in error";
     public static final String POSITION_TYPE_CASE_TRANSFERRED_SAME_COUNTRY = "Case transferred - same country";
     public static final String POSITION_TYPE_CASE_TRANSFERRED_OTHER_COUNTRY = "Case transferred - other country";
+    public static final String POSITION_TYPE_CASE_TRANSFERRED_REFORM_ECM = "Case transferred to Reform ECM";
 
     public static final String HEARING_TYPE_PRIVATE = "Private";
     public static final String HEARING_TYPE_PUBLIC = "Public";
@@ -353,7 +354,7 @@ public class Constants {
     public static final String MISSING_JURISDICTION_OUTCOME_ERROR_MESSAGE = "A Jurisdiction outcome is required before "
         + "the case can be closed";
     public static final String MISSING_JUDGEMENT_JURISDICTION_MESSAGE = "This case contains a Judgment which does not "
-        + "have a jurisdiction attached to it. To enable this case to be closed, please ensure the relevant " 
+        + "have a jurisdiction attached to it. To enable this case to be closed, please ensure the relevant "
         + "jurisdiction(s) has been linked to the Judgment.";
     public static final String MISSING_JURISDICTION_MESSAGE = "You cannot close this case as there is currently no "
         + "jurisdiction and no jurisdiction outcome associated with it";
@@ -361,11 +362,11 @@ public class Constants {
         + " 'Not allocated'. A Jurisdiction outcome is required before the case can be closed.";
     public static final String NOT_ALLOCATED = "Not allocated";
     public static final String ADDRESS_LABELS_EMPTY_ERROR = "No addresses were found for you selection";
-    public static final String ADDRESS_LABELS_SELECT_ERROR = "You need to select at least one address label before" 
+    public static final String ADDRESS_LABELS_SELECT_ERROR = "You need to select at least one address label before"
             + " printing";
-    public static final String ADDRESS_LABELS_COPIES_ERROR = "You need to use a whole number for the number of copies " 
+    public static final String ADDRESS_LABELS_COPIES_ERROR = "You need to use a whole number for the number of copies "
             + "field";
-    public static final String ADDRESS_LABELS_COPIES_LESS_10_ERROR = "Number of copies should be less than or equal " 
+    public static final String ADDRESS_LABELS_COPIES_LESS_10_ERROR = "Number of copies should be less than or equal "
             + "to 10";
     public static final String ADDRESS_LABELS_LABELS_LIMIT_ERROR = "Number of labels to be printed reached the limit";
     public static final String JURISDICTION_CODES_EXISTENCE_ERROR =
@@ -436,7 +437,7 @@ public class Constants {
     public static final String BF_ACTION_STRIKING_OUT_WARNING = "Striking out warning issued";
     public static final String LETTER_ADDRESS_MANAGING_OFFICE = "Managing Office";
     public static final String LETTER_ADDRESS_ALLOCATED_OFFICE = "Allocated Office";
-    public static final String INVALID_LISTING_DATE_RANGE_ERROR_MESSAGE = "Please enter a date range that does not " 
+    public static final String INVALID_LISTING_DATE_RANGE_ERROR_MESSAGE = "Please enter a date range that does not "
             + "exceed 31 days.";
 
     public static final List<String> SINGLE_OPEN_CASE_STATES = List.of(ACCEPTED_STATE, REJECTED_STATE, SUBMITTED_STATE);
