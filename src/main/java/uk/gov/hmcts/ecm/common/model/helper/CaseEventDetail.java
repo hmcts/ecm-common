@@ -2,6 +2,7 @@ package uk.gov.hmcts.ecm.common.model.helper;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.Builder;
@@ -37,4 +38,9 @@ public class CaseEventDetail {
     private Map<String, Object> data;
     private Map<String, Object> dataClassification;
     private SignificantItem significantItem;
+
+    public int comparedTo(CaseEventDetail secondCaseEventDetail) {
+        return this.getCreatedDate()
+                .compareTo(secondCaseEventDetail.getCreatedDate());
+    }
 }
