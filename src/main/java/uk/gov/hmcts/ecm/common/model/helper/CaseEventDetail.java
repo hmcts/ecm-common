@@ -15,10 +15,6 @@ import uk.gov.hmcts.ecm.common.model.ccd.SignificantItem;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CaseEventDetail {
 
-    public CaseEventDetail()
-    {
-        // For access
-    }
     @JsonProperty("user_id")
     private String userId;
     @JsonProperty("user_last_name")
