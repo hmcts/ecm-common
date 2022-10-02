@@ -2,7 +2,6 @@ package uk.gov.hmcts.ecm.common.model.helper;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.Builder;
@@ -15,6 +14,11 @@ import uk.gov.hmcts.ecm.common.model.ccd.SignificantItem;
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CaseEventDetail {
+
+    public CaseEventDetail()
+    {
+        // For access
+    }
     @JsonProperty("user_id")
     private String userId;
     @JsonProperty("user_last_name")
