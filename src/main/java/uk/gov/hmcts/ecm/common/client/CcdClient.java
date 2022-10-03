@@ -19,6 +19,7 @@ import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.CaseSearchResult;
 import uk.gov.hmcts.ecm.common.model.ccd.PaginatedSearchMetadata;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
+import uk.gov.hmcts.ecm.common.model.helper.CaseEventDetail;
 import uk.gov.hmcts.ecm.common.model.labels.LabelCaseSearchResult;
 import uk.gov.hmcts.ecm.common.model.labels.LabelPayloadEvent;
 import uk.gov.hmcts.ecm.common.model.multiples.MultipleCaseSearchResult;
@@ -165,6 +166,15 @@ public class CcdClient {
         String uri = ccdClientConfig.buildRetrieveCaseUrl(userService.getUserDetails(authToken).getUid(), jurisdiction,
                 caseTypeId, cid);
         return restTemplate.exchange(uri, HttpMethod.GET, request, SubmitEvent.class).getBody();
+    }
+
+    public List<CaseEventDetail> retrieveCaseEventDetails(String authToken, String caseTypeId, String jurisdiction, String cid)
+            throws IOException {
+        HttpEntity<CCDRequest> request =
+                new HttpEntity<>(buildHeaders(authToken));
+        String uri = ccdClientConfig.buildRetrieveCaseEventDetailsUrl(userService.getUserDetails(authToken).getUid(), jurisdiction,
+                caseTypeId, cid);
+        return restTemplate.exchange(uri, HttpMethod.GET, request, new ParameterizedTypeReference<List<CaseEventDetail>>(){}).getBody();
     }
 
     public List<SubmitEvent> executeElasticSearch(String authToken, String caseTypeId, String query)
