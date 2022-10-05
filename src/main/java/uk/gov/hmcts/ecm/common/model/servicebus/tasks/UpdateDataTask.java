@@ -93,8 +93,11 @@ public class UpdateDataTask extends DataTaskParent {
     }
 
     private void batchUpdate2(CaseData caseData, UpdateDataModel updateDataModel) {
-        if (!isNullOrEmpty(updateDataModel.getSubMultiple())) {
-            caseData.setSubMultipleName(updateDataModel.getSubMultiple());
+        if (updateDataModel.getSubMultipleEthosReferenceList() != null) {
+            String subMultiple = updateDataModel.getSubMultipleEthosReferenceList().get(caseData.getEthosCaseReference());
+            if (!Strings.isNullOrEmpty(subMultiple)) {
+                caseData.setSubMultipleName(subMultiple);
+            }
         }
     }
 
