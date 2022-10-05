@@ -2,7 +2,7 @@ package uk.gov.hmcts.ecm.common.model.servicebus.tasks;
 
 import org.junit.Before;
 import org.junit.Test;
-
+import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -137,8 +137,10 @@ public class UpdateDataTaskTest {
     @Test
     public void checkSubMultiple() {
         var updateModel = updateDataModelBuilder.build();
-        updateModel.setSubMultiple("SubMultiple");
+        HashMap<String, String> subMultipleEthosReferenceList = new HashMap<>();
         var submitEvent = caseDataBuilder.buildAsSubmitEvent("Accepted");
+        subMultipleEthosReferenceList.put(submitEvent.getCaseData().getEthosCaseReference(), "SubMultiple");
+        updateModel.setSubMultipleEthosReferenceList(subMultipleEthosReferenceList);
         var task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
         assertEquals("SubMultiple", submitEvent.getCaseData().getSubMultipleName());
