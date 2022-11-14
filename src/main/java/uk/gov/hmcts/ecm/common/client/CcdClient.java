@@ -90,9 +90,10 @@ public class CcdClient {
         return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
     }
 
-    public CCDRequest startCaseCreationTransfer(String authToken, CaseDetails caseDetails) throws IOException {
-        HttpEntity<String> request =
-                new HttpEntity<>(buildHeaders(authToken));
+    public CCDRequest startCaseCreationTransfer(String authToken,
+                                                uk.gov.hmcts.ecm.common.model.ccd.CaseDetails caseDetails)
+        throws IOException {
+        HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
         String uri = ccdClientConfig.buildStartCaseCreationTransferUrl(userService.getUserDetails(authToken).getUid(),
                 caseDetails.getJurisdiction(),
                 caseDetails.getCaseTypeId());
