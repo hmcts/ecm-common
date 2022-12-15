@@ -1,6 +1,5 @@
 package uk.gov.hmcts.ecm.common.servicebus;
 
-import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.ACCEPTED_STATE;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.SUBMITTED_STATE;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.MULTIPLE_CASE_TYPE;

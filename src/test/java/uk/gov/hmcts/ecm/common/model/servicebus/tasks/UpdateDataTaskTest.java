@@ -137,10 +137,8 @@ public class UpdateDataTaskTest {
     @Test
     public void checkSubMultiple() {
         var updateModel = updateDataModelBuilder.build();
-        HashMap<String, String> subMultipleEthosReferenceList = new HashMap<>();
+        updateModel.setSubMultiple("SubMultiple");
         var submitEvent = caseDataBuilder.buildAsSubmitEvent("Accepted");
-        subMultipleEthosReferenceList.put(submitEvent.getCaseData().getEthosCaseReference(), "SubMultiple");
-        updateModel.setSubMultipleEthosReferenceList(subMultipleEthosReferenceList);
         var task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
         assertEquals("SubMultiple", submitEvent.getCaseData().getSubMultipleName());
