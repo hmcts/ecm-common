@@ -316,6 +316,12 @@ public class Constants {
     public static final String HEARING_DOC_IT56 = "IT56 - List of Exhibits";
     public static final String HEARING_DOC_IT57 = "ETRP - ET recording of proceeding";
 
+    //hearing venue name label for Newcastle
+    public static final String NEWCASTLE_CFT = "Newcastle CFT";
+    public static final String NEWCASTLE_CFCTC = "Newcastle CFCTC";
+    public static final String TEESSIDE_MAGS = "Teesside Mags";
+    public static final String TEESSIDE_JUSTICE_CENTRE = "Teesside Justice Centre";
+
     public static final String HEARING_ETCL_PUBLIC = "Public";
     public static final String HEARING_ETCL_STAFF = "Staff";
     public static final String HEARING_ETCL_PRESS_LIST = "Press List";
