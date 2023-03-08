@@ -46,8 +46,8 @@ public class UpdateDataTask extends DataTaskParent {
         super(dataModelParent);
     }
 
-    public void run(CaseDetails caseDetails) {
-        amendUpdateFields(caseDetails.getCaseData());
+    public void run(SubmitEvent submitEvent) {
+        amendUpdateFields(submitEvent.getCaseData());
     }
 
     private void amendUpdateFields(CaseData caseData) {

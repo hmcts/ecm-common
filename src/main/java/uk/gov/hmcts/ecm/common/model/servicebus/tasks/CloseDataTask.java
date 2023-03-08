@@ -27,10 +27,10 @@ public class CloseDataTask extends DataTaskParent {
         super(dataModelParent);
     }
 
-    public void run(CaseDetails caseDetails) {
+    public void run(SubmitEvent submitEvent) {
 
-        if (!caseDetails.getState().equals(CLOSED_STATE)) {
-            closeLogic(caseDetails.getCaseData());
+        if (!submitEvent.getState().equals(CLOSED_STATE)) {
+            closeLogic(submitEvent.getCaseData());
         } else {
             log.info("The case is already closed");
         }

@@ -37,9 +37,9 @@ public class ServiceBusHelper {
                 .build();
     }
 
-    public static CaseDetails generateCaseDetails(String state) {
-        CaseDetails caseDetails = new CaseDetails();
-        caseDetails.setState(state);
+    public static SubmitEvent generateSubmitEvent(String state) {
+        SubmitEvent submitEvent = new SubmitEvent();
+        submitEvent.setState(state);
         CaseData caseData = new CaseData();
         caseData.setEthosCaseReference("4150002/2020");
         JurCodesType jurCodesType = new JurCodesType();
@@ -48,13 +48,13 @@ public class ServiceBusHelper {
         jurCodesTypeItem.setValue(jurCodesType);
         List<JurCodesTypeItem> jurCodesCollection = new ArrayList<>(Collections.singletonList(jurCodesTypeItem));
         caseData.setJurCodesCollection(jurCodesCollection);
-        caseDetails.setCaseData(caseData);
-        return caseDetails;
+        submitEvent.setCaseData(caseData);
+        return submitEvent;
     }
 
-    public static CaseDetails generateCaseDetailsDetailed(String state) {
-        CaseDetails caseDetails = new CaseDetails();
-        caseDetails.setState(state);
+    public static SubmitEvent generateSubmitEventDetailed(String state) {
+        SubmitEvent submitEvent = new SubmitEvent();
+        submitEvent.setState(state);
         CaseData caseData = new CaseData();
         caseData.setEthosCaseReference("4150002/2020");
         JurCodesType jurCodesType = new JurCodesType();
@@ -89,8 +89,8 @@ public class ServiceBusHelper {
         respondentSumTypeItem.setId(UUID.randomUUID().toString());
         respondentSumTypeItem.setValue(respondentSumType);
         caseData.setRespondentCollection(new ArrayList<>(Collections.singletonList(respondentSumTypeItem)));
-        caseDetails.setCaseData(caseData);
-        return caseDetails;
+        submitEvent.setCaseData(caseData);
+        return submitEvent;
     }
 
     public static CreationDataModel getCreationDataModel(String leadRef) {

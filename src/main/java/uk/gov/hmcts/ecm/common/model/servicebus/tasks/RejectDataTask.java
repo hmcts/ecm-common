@@ -29,12 +29,12 @@ public class RejectDataTask extends DataTaskParent {
         super(dataModelParent);
     }
 
-    public void run(CaseDetails caseDetails) {
+    public void run(SubmitEvent submitEvent) {
 
-        if (SINGLE_OPEN_CASE_STATES.contains(caseDetails.getState())) {
-            rejectLogic(caseDetails.getCaseData());
+        if (SINGLE_OPEN_CASE_STATES.contains(submitEvent.getState())) {
+            rejectLogic(submitEvent.getCaseData());
         } else {
-            log.info("Case {} is not in the right state", caseDetails.getCaseData().getEthosCaseReference());
+            log.info("Case {} is not in the right state", submitEvent.getCaseData().getEthosCaseReference());
         }
 
     }

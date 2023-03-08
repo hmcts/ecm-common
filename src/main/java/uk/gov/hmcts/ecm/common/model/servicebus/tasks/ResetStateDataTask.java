@@ -22,7 +22,7 @@ public class ResetStateDataTask extends DataTaskParent {
         super(dataModelParent);
     }
 
-    public void run(CaseDetails caseDetails) {
+    public void run(SubmitEvent submitEvent) {
 
         log.info("Resetting state");
 

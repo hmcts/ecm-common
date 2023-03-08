@@ -26,11 +26,11 @@ public class CreationDataTask extends DataTaskParent {
         super(dataModelParent);
     }
 
-    public void run(CaseDetails caseDetails) {
+    public void run(SubmitEvent submitEvent) {
 
-        checkLeadClaimant(caseDetails.getCaseData());
+        checkLeadClaimant(submitEvent.getCaseData());
 
-        amendCreationFields(caseDetails.getCaseData());
+        amendCreationFields(submitEvent.getCaseData());
 
     }
 

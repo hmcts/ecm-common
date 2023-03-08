@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.ecm.common.helpers.ServiceBusHelper;
-import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.servicebus.UpdateCaseMsg;
 
@@ -36,15 +35,15 @@ import static uk.gov.hmcts.ecm.common.model.helper.Constants.SINGLE_CASE_TYPE;
 public class UpdateCaseMsgTest {
 
     private UpdateCaseMsg updateCaseMsg;
-    private CaseDetails caseDetailsSubmitted;
-    private CaseDetails caseDetailsAccepted;
-    private CaseDetails caseDetailsDetailed;
+    private SubmitEvent submitEventSubmitted;
+    private SubmitEvent submitEventAccepted;
+    private SubmitEvent submitEventDetailed;
 
     @Before
     public void setUp() {
-        caseDetailsAccepted = ServiceBusHelper.generateCaseDetails(ACCEPTED_STATE);
-        caseDetailsSubmitted = ServiceBusHelper.generateCaseDetails(SUBMITTED_STATE);
-        caseDetailsDetailed = ServiceBusHelper.generateCaseDetailsDetailed(ACCEPTED_STATE);
+        submitEventAccepted = ServiceBusHelper.generateSubmitEvent(ACCEPTED_STATE);
+        submitEventSubmitted = ServiceBusHelper.generateSubmitEvent(SUBMITTED_STATE);
+        submitEventDetailed = ServiceBusHelper.generateSubmitEventDetailed(ACCEPTED_STATE);
     }
 
     @Test
@@ -67,101 +66,101 @@ public class UpdateCaseMsgTest {
     public void runTaskCreation() {
         CreationDataModel creationDataModel = ServiceBusHelper.getCreationDataModel("4150002/2020");
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(creationDataModel);
-        updateCaseMsg.runTask(caseDetailsAccepted);
-        assertEquals(MULTIPLE_CASE_TYPE, caseDetailsAccepted.getCaseData().getEcmCaseType());
-        assertEquals("4150001", caseDetailsAccepted.getCaseData().getMultipleReference());
-        assertEquals(YES, caseDetailsAccepted.getCaseData().getLeadClaimant());
+        updateCaseMsg.runTask(submitEventAccepted);
+        assertEquals(MULTIPLE_CASE_TYPE, submitEventAccepted.getCaseData().getEcmCaseType());
+        assertEquals("4150001", submitEventAccepted.getCaseData().getMultipleReference());
+        assertEquals(YES, submitEventAccepted.getCaseData().getLeadClaimant());
     }
 
     @Test
     public void runTaskPreAccept() {
         PreAcceptDataModel preAcceptDataModel = ServiceBusHelper.getPreAcceptDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(preAcceptDataModel);
-        updateCaseMsg.runTask(caseDetailsSubmitted);
-        assertEquals("25-10-2020", caseDetailsSubmitted.getCaseData().getPreAcceptCase().getDateAccepted());
-        assertEquals(YES, caseDetailsSubmitted.getCaseData().getPreAcceptCase().getCaseAccepted());
+        updateCaseMsg.runTask(submitEventSubmitted);
+        assertEquals("25-10-2020", submitEventSubmitted.getCaseData().getPreAcceptCase().getDateAccepted());
+        assertEquals(YES, submitEventSubmitted.getCaseData().getPreAcceptCase().getCaseAccepted());
     }
 
     @Test
     public void runTaskPreAcceptAlreadyAccepted() {
         PreAcceptDataModel preAcceptDataModel = ServiceBusHelper.getPreAcceptDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(preAcceptDataModel);
-        updateCaseMsg.runTask(caseDetailsAccepted);
-        assertEquals(ACCEPTED_STATE, caseDetailsAccepted.getState());
+        updateCaseMsg.runTask(submitEventAccepted);
+        assertEquals(ACCEPTED_STATE, submitEventAccepted.getState());
     }
 
     @Test
     public void runTaskReject() {
         RejectDataModel rejectDataModel = ServiceBusHelper.getRejectDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(rejectDataModel);
-        updateCaseMsg.runTask(caseDetailsSubmitted);
+        updateCaseMsg.runTask(submitEventSubmitted);
         List<String> reasons = new ArrayList<>(Arrays.asList("RejectionReason1", "RejectionReason2"));
-        assertEquals(NO, caseDetailsSubmitted.getCaseData().getPreAcceptCase().getCaseAccepted());
-        assertEquals("25-10-2020", caseDetailsSubmitted.getCaseData().getPreAcceptCase().getDateRejected());
-        assertEquals(reasons, caseDetailsSubmitted.getCaseData().getPreAcceptCase().getRejectReason());
+        assertEquals(NO, submitEventSubmitted.getCaseData().getPreAcceptCase().getCaseAccepted());
+        assertEquals("25-10-2020", submitEventSubmitted.getCaseData().getPreAcceptCase().getDateRejected());
+        assertEquals(reasons, submitEventSubmitted.getCaseData().getPreAcceptCase().getRejectReason());
     }
 
     @Test
     public void runTaskClose() {
         CloseDataModel closeDataModel = ServiceBusHelper.getCloseDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(closeDataModel);
-        updateCaseMsg.runTask(caseDetailsSubmitted);
-        assertEquals(CASE_CLOSED_POSITION, caseDetailsSubmitted.getCaseData().getPositionType());
-        assertEquals("FileLocation", caseDetailsSubmitted.getCaseData().getFileLocation());
-        assertEquals("ClerkResponsible", caseDetailsSubmitted.getCaseData().getClerkResponsible());
-        assertEquals("Notes", caseDetailsSubmitted.getCaseData().getCaseNotes());
-        assertEquals("ManagingOffice", caseDetailsSubmitted.getCaseData().getManagingOffice());
-        assertEquals("FileLocationGlasgow", caseDetailsSubmitted.getCaseData().getFileLocationGlasgow());
-        assertEquals("FileLocationAberdeen", caseDetailsSubmitted.getCaseData().getFileLocationAberdeen());
-        assertEquals("FileLocationDundee", caseDetailsSubmitted.getCaseData().getFileLocationDundee());
-        assertEquals("FileLocationEdinburgh", caseDetailsSubmitted.getCaseData().getFileLocationEdinburgh());
+        updateCaseMsg.runTask(submitEventSubmitted);
+        assertEquals(CASE_CLOSED_POSITION, submitEventSubmitted.getCaseData().getPositionType());
+        assertEquals("FileLocation", submitEventSubmitted.getCaseData().getFileLocation());
+        assertEquals("ClerkResponsible", submitEventSubmitted.getCaseData().getClerkResponsible());
+        assertEquals("Notes", submitEventSubmitted.getCaseData().getCaseNotes());
+        assertEquals("ManagingOffice", submitEventSubmitted.getCaseData().getManagingOffice());
+        assertEquals("FileLocationGlasgow", submitEventSubmitted.getCaseData().getFileLocationGlasgow());
+        assertEquals("FileLocationAberdeen", submitEventSubmitted.getCaseData().getFileLocationAberdeen());
+        assertEquals("FileLocationDundee", submitEventSubmitted.getCaseData().getFileLocationDundee());
+        assertEquals("FileLocationEdinburgh", submitEventSubmitted.getCaseData().getFileLocationEdinburgh());
     }
 
     @Test
     public void runTaskDetach() {
         DetachDataModel detachDataModel = ServiceBusHelper.getDetachDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(detachDataModel);
-        updateCaseMsg.runTask(caseDetailsAccepted);
-        assertEquals(SINGLE_CASE_TYPE, caseDetailsAccepted.getCaseData().getEcmCaseType());
-        assertNull(caseDetailsAccepted.getCaseData().getMultipleReference());
+        updateCaseMsg.runTask(submitEventAccepted);
+        assertEquals(SINGLE_CASE_TYPE, submitEventAccepted.getCaseData().getEcmCaseType());
+        assertNull(submitEventAccepted.getCaseData().getMultipleReference());
     }
 
     @Test
     public void runTaskResetState() {
         ResetStateDataModel resetStateDataModel = ServiceBusHelper.getResetStateDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(resetStateDataModel);
-        updateCaseMsg.runTask(caseDetailsAccepted);
-        assertEquals(ACCEPTED_STATE, caseDetailsAccepted.getState());
+        updateCaseMsg.runTask(submitEventAccepted);
+        assertEquals(ACCEPTED_STATE, submitEventAccepted.getState());
     }
 
     @Test
     public void runTaskCreationSingle() {
         CreationSingleDataModel creationSingleDataModel = ServiceBusHelper.getCreationSingleDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(creationSingleDataModel);
-        updateCaseMsg.runTask(caseDetailsAccepted);
-        assertEquals(ACCEPTED_STATE, caseDetailsAccepted.getState());
+        updateCaseMsg.runTask(submitEventAccepted);
+        assertEquals(ACCEPTED_STATE, submitEventAccepted.getState());
     }
 
     @Test
     public void runTaskUpdate() {
         UpdateDataModel updateDataModel = ServiceBusHelper.getUpdateDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(updateDataModel);
-        updateCaseMsg.runTask(caseDetailsAccepted);
-        assertEquals("ManagingOffice", caseDetailsAccepted.getCaseData().getManagingOffice());
-        assertEquals("FileLocation", caseDetailsAccepted.getCaseData().getFileLocation());
-        assertEquals("FileLocationGlasgow", caseDetailsAccepted.getCaseData().getFileLocationGlasgow());
-        assertEquals("FileLocationAberdeen", caseDetailsAccepted.getCaseData().getFileLocationAberdeen());
-        assertEquals("FileLocationDundee", caseDetailsAccepted.getCaseData().getFileLocationDundee());
-        assertEquals("FileLocationEdinburgh", caseDetailsAccepted.getCaseData().getFileLocationEdinburgh());
-        assertEquals("ClerkResponsible", caseDetailsAccepted.getCaseData().getClerkResponsible());
-        assertEquals("PositionType", caseDetailsAccepted.getCaseData().getPositionType());
-        assertEquals("25/08/1999", caseDetailsAccepted.getCaseData().getReceiptDate());
-        assertEquals("HearingStage", caseDetailsAccepted.getCaseData().getHearingStage());
-        assertEquals("RepName", caseDetailsAccepted.getCaseData()
+        updateCaseMsg.runTask(submitEventAccepted);
+        assertEquals("ManagingOffice", submitEventAccepted.getCaseData().getManagingOffice());
+        assertEquals("FileLocation", submitEventAccepted.getCaseData().getFileLocation());
+        assertEquals("FileLocationGlasgow", submitEventAccepted.getCaseData().getFileLocationGlasgow());
+        assertEquals("FileLocationAberdeen", submitEventAccepted.getCaseData().getFileLocationAberdeen());
+        assertEquals("FileLocationDundee", submitEventAccepted.getCaseData().getFileLocationDundee());
+        assertEquals("FileLocationEdinburgh", submitEventAccepted.getCaseData().getFileLocationEdinburgh());
+        assertEquals("ClerkResponsible", submitEventAccepted.getCaseData().getClerkResponsible());
+        assertEquals("PositionType", submitEventAccepted.getCaseData().getPositionType());
+        assertEquals("25/08/1999", submitEventAccepted.getCaseData().getReceiptDate());
+        assertEquals("HearingStage", submitEventAccepted.getCaseData().getHearingStage());
+        assertEquals("RepName", submitEventAccepted.getCaseData()
                 .getRepresentativeClaimantType().getNameOfRepresentative());
-        assertEquals("AC", caseDetailsAccepted.getCaseData()
+        assertEquals("AC", submitEventAccepted.getCaseData()
                 .getJurCodesCollection().get(1).getValue().getJuridictionCodesList());
-        assertEquals("RespondentName", caseDetailsAccepted.getCaseData()
+        assertEquals("RespondentName", submitEventAccepted.getCaseData()
                 .getRespondentCollection().get(0).getValue().getRespondentName());
     }
 
@@ -169,22 +168,22 @@ public class UpdateCaseMsgTest {
     public void runTaskUpdatecaseDetailsDetailed() {
         UpdateDataModel updateDataModel = ServiceBusHelper.getUpdateDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(updateDataModel);
-        updateCaseMsg.runTask(caseDetailsDetailed);
-        assertEquals("ManagingOffice", caseDetailsDetailed.getCaseData().getManagingOffice());
-        assertEquals("FileLocation", caseDetailsDetailed.getCaseData().getFileLocation());
-        assertEquals("FileLocationGlasgow", caseDetailsDetailed.getCaseData().getFileLocationGlasgow());
-        assertEquals("FileLocationAberdeen", caseDetailsDetailed.getCaseData().getFileLocationAberdeen());
-        assertEquals("FileLocationDundee", caseDetailsDetailed.getCaseData().getFileLocationDundee());
-        assertEquals("FileLocationEdinburgh", caseDetailsDetailed.getCaseData().getFileLocationEdinburgh());
-        assertEquals("ClerkResponsible", caseDetailsDetailed.getCaseData().getClerkResponsible());
-        assertEquals("PositionType", caseDetailsDetailed.getCaseData().getPositionType());
-        assertEquals("RepName", caseDetailsDetailed
+        updateCaseMsg.runTask(submitEventDetailed);
+        assertEquals("ManagingOffice", submitEventDetailed.getCaseData().getManagingOffice());
+        assertEquals("FileLocation", submitEventDetailed.getCaseData().getFileLocation());
+        assertEquals("FileLocationGlasgow", submitEventDetailed.getCaseData().getFileLocationGlasgow());
+        assertEquals("FileLocationAberdeen", submitEventDetailed.getCaseData().getFileLocationAberdeen());
+        assertEquals("FileLocationDundee", submitEventDetailed.getCaseData().getFileLocationDundee());
+        assertEquals("FileLocationEdinburgh", submitEventDetailed.getCaseData().getFileLocationEdinburgh());
+        assertEquals("ClerkResponsible", submitEventDetailed.getCaseData().getClerkResponsible());
+        assertEquals("PositionType", submitEventDetailed.getCaseData().getPositionType());
+        assertEquals("RepName", submitEventDetailed
                 .getCaseData().getRepresentativeClaimantType().getNameOfRepresentative());
-        assertEquals("AC", caseDetailsDetailed
+        assertEquals("AC", submitEventDetailed
                 .getCaseData().getJurCodesCollection().get(1).getValue().getJuridictionCodesList());
-        assertEquals("RespondentName", caseDetailsDetailed
+        assertEquals("RespondentName", submitEventDetailed
                 .getCaseData().getRespondentCollection().get(0).getValue().getRespondentName());
-        assertEquals("RespondentName", caseDetailsDetailed
+        assertEquals("RespondentName", submitEventDetailed
                 .getCaseData().getRepCollection().get(0).getValue().getRespRepName());
     }
 }

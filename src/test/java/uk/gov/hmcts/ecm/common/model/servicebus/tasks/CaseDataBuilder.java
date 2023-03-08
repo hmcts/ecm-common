@@ -30,11 +30,11 @@ public class CaseDataBuilder {
         return caseData;
     }
 
-    public CaseDetails buildAsCaseDetails(String state) {
-        var caseDetails = new CaseDetails();
-        caseDetails.setCaseData(caseData);
-        caseDetails.setState(state);
+    public SubmitEvent buildAsSubmitEvent(String state) {
+        var submitEvent = new SubmitEvent();
+        submitEvent.setCaseData(caseData);
+        submitEvent.setState(state);
 
-        return caseDetails;
+        return submitEvent;
     }
 }

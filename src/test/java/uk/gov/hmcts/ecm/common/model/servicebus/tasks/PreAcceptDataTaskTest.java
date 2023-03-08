@@ -30,7 +30,7 @@ class PreAcceptDataTaskTest {
     void checkInvalidCaseStates(String state) {
         // When an invalid case state is passed through, the date's and accepted status should remain the same
         var updateModel = preAcceptDataModelBuilder.preAcceptDataModelBuilder("2022-02-02").build();
-        var submitEvent = caseDataBuilder.buildAsCaseDetails(state);
+        var submitEvent = caseDataBuilder.buildAsSubmitEvent(state);
         var casePreAcceptType = new CasePreAcceptType();
         casePreAcceptType.setCaseAccepted(YES);
         casePreAcceptType.setDateAccepted("2021-01-01");
@@ -51,7 +51,7 @@ class PreAcceptDataTaskTest {
     })
      void checkValidCaseStates(String state, String caseAccepted) {
         var updateModel = preAcceptDataModelBuilder.preAcceptDataModelBuilder("2022-02-02").build();
-        var submitEvent = caseDataBuilder.buildAsCaseDetails(state);
+        var submitEvent = caseDataBuilder.buildAsSubmitEvent(state);
 
         var task = new PreAcceptDataTask(updateModel);
         task.run(submitEvent);
@@ -65,7 +65,7 @@ class PreAcceptDataTaskTest {
     void checkIfCaseAlreadyAccepted() {
         // If a case has already been accepted, it should not be overwritten with a new data
        var updateModel = preAcceptDataModelBuilder.preAcceptDataModelBuilder("2022-02-02").build();
-       var submitEvent = caseDataBuilder.buildAsCaseDetails(ACCEPTED_STATE);
+       var submitEvent = caseDataBuilder.buildAsSubmitEvent(ACCEPTED_STATE);
        var casePreAcceptType = new CasePreAcceptType();
        casePreAcceptType.setCaseAccepted(YES);
        casePreAcceptType.setDateAccepted("2021-01-01");

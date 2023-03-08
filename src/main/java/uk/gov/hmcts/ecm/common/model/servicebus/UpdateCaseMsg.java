@@ -41,11 +41,11 @@ public class UpdateCaseMsg extends Msg {
                 '}';
     }
 
-    public void runTask(CaseDetails caseDetails) {
+    public void runTask(SubmitEvent submitEvent) {
 
         DataTaskParent dataTaskParent = DataModelFactory.getDataModelType(dataModelParent);
 
-        dataTaskParent.run(caseDetails);
+        dataTaskParent.run(submitEvent);
 
     }
 }

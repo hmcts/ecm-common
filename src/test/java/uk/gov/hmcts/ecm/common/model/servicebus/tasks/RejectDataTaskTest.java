@@ -34,7 +34,7 @@ class RejectDataTaskTest {
         var rejectReasons = List.of("Defect");
         var updateModel = rejectDataModelBuilder.rejectDataModelBuilder(
                 "2022-02-02", rejectReasons).build();
-        var submitEvent = caseDataBuilder.buildAsCaseDetails(state);
+        var submitEvent = caseDataBuilder.buildAsSubmitEvent(state);
         var casePreAcceptType = new CasePreAcceptType();
         casePreAcceptType.setCaseAccepted(NO);
         casePreAcceptType.setDateRejected("2021-01-01");
@@ -59,7 +59,7 @@ class RejectDataTaskTest {
         var rejectReasons = List.of("Defect", "Not on Prescribed Form");
         var updateModel = rejectDataModelBuilder.rejectDataModelBuilder(
                 "2022-02-02", rejectReasons).build();
-        var submitEvent = caseDataBuilder.buildAsCaseDetails(state);
+        var submitEvent = caseDataBuilder.buildAsSubmitEvent(state);
 
         var task = new RejectDataTask(updateModel);
         task.run(submitEvent);
@@ -76,7 +76,7 @@ class RejectDataTaskTest {
         var rejectReasons = List.of("Defect", "Not on Prescribed Form");
         var updateModel = rejectDataModelBuilder.rejectDataModelBuilder(
                 "2022-02-02", rejectReasons).build();
-        var submitEvent = caseDataBuilder.buildAsCaseDetails(REJECTED_STATE);
+        var submitEvent = caseDataBuilder.buildAsSubmitEvent(REJECTED_STATE);
         var casePreAcceptType = new CasePreAcceptType();
         casePreAcceptType.setCaseAccepted(NO);
         casePreAcceptType.setDateRejected("2021-01-01");
