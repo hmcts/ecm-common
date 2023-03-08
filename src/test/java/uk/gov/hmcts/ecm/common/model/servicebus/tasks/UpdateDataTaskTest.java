@@ -24,7 +24,7 @@ public class UpdateDataTaskTest {
     public void addNewJurisdictionCode() {
         var updateModel = updateDataModelBuilder.withJurisdictionCode("Code1", "Outcome1").build();
         var submitEvent = caseDataBuilder.withJurisdictionCode("Code2", "Outcome2")
-                .buildAsSubmitEvent("Accepted");
+                .buildAsCaseDetails("Accepted");
 
         var task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
@@ -45,7 +45,7 @@ public class UpdateDataTaskTest {
     public void updateExistingJurisdictionCode() {
         var updateModel = updateDataModelBuilder.withJurisdictionCode("Code1", "Outcome1").build();
         var submitEvent = caseDataBuilder.withJurisdictionCode("Code1", "Outcome2")
-                                        .buildAsSubmitEvent("Accepted");
+                                        .buildAsCaseDetails("Accepted");
 
         var task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
@@ -66,7 +66,7 @@ public class UpdateDataTaskTest {
     public void noUpdateToJurisdictionCode() {
         var updateModel = updateDataModelBuilder.build();
         var submitEvent = caseDataBuilder.withJurisdictionCode("Code1", "Outcome1")
-                .buildAsSubmitEvent("Accepted");
+                .buildAsCaseDetails("Accepted");
 
         var task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
@@ -86,7 +86,7 @@ public class UpdateDataTaskTest {
     @Test
     public void addJurisdictionCodeWhenNonExist() {
         var updateModel = updateDataModelBuilder.withJurisdictionCode("Code1", "Outcome1").build();
-        var submitEvent = caseDataBuilder.buildAsSubmitEvent("Accepted");
+        var submitEvent = caseDataBuilder.buildAsCaseDetails("Accepted");
 
         var task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
@@ -106,7 +106,7 @@ public class UpdateDataTaskTest {
     @Test
     public void noJurisdictionCode() {
         var updateModel = updateDataModelBuilder.build();
-        var submitEvent = caseDataBuilder.buildAsSubmitEvent("Accepted");
+        var submitEvent = caseDataBuilder.buildAsCaseDetails("Accepted");
 
         var task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
@@ -120,7 +120,7 @@ public class UpdateDataTaskTest {
         updateModel.setIsFixCase("Yes");
 
         var submitEvent = caseDataBuilder.withJurisdictionCode("ADT", "Outcome1")
-                .buildAsSubmitEvent("Accepted");
+                .buildAsCaseDetails("Accepted");
         submitEvent.getCaseData().getJurCodesCollection().get(0).setId("ADT");
 
         assertEquals("ADT", submitEvent.getCaseData().getJurCodesCollection().get(0).getId());
@@ -138,7 +138,7 @@ public class UpdateDataTaskTest {
     public void checkSubMultiple() {
         var updateModel = updateDataModelBuilder.build();
         updateModel.setSubMultiple("SubMultiple");
-        var submitEvent = caseDataBuilder.buildAsSubmitEvent("Accepted");
+        var submitEvent = caseDataBuilder.buildAsCaseDetails("Accepted");
         var task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
         assertEquals("SubMultiple", submitEvent.getCaseData().getSubMultipleName());

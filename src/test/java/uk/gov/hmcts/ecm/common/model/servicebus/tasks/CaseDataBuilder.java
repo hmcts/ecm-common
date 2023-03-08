@@ -1,6 +1,7 @@
 package uk.gov.hmcts.ecm.common.model.servicebus.tasks;
 
 import uk.gov.hmcts.ecm.common.model.ccd.CaseData;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.ccd.items.JurCodesTypeItem;
 import uk.gov.hmcts.ecm.common.model.ccd.types.JurCodesType;
@@ -29,11 +30,11 @@ public class CaseDataBuilder {
         return caseData;
     }
 
-    public SubmitEvent buildAsSubmitEvent(String state) {
-        var submitEvent = new SubmitEvent();
-        submitEvent.setCaseData(caseData);
-        submitEvent.setState(state);
+    public CaseDetails buildAsCaseDetails(String state) {
+        var caseDetails = new CaseDetails();
+        caseDetails.setCaseData(caseData);
+        caseDetails.setState(state);
 
-        return submitEvent;
+        return caseDetails;
     }
 }
