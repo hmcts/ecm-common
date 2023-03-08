@@ -165,7 +165,7 @@ public class UpdateCaseMsgTest {
     }
 
     @Test
-    public void runTaskUpdatecaseDetailsDetailed() {
+    public void runTaskUpdateSubmitEventDetailed() {
         UpdateDataModel updateDataModel = ServiceBusHelper.getUpdateDataModel();
         updateCaseMsg = ServiceBusHelper.generateUpdateCaseMsg(updateDataModel);
         updateCaseMsg.runTask(submitEventDetailed);
