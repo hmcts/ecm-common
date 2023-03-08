@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.servicebus.datamodel.DataModelFactory;
 import uk.gov.hmcts.ecm.common.model.servicebus.tasks.*;
@@ -40,11 +41,11 @@ public class UpdateCaseMsg extends Msg {
                 '}';
     }
 
-    public void runTask(SubmitEvent submitEvent) {
+    public void runTask(CaseDetails caseDetails) {
 
         DataTaskParent dataTaskParent = DataModelFactory.getDataModelType(dataModelParent);
 
-        dataTaskParent.run(submitEvent);
+        dataTaskParent.run(caseDetails);
 
     }
 }

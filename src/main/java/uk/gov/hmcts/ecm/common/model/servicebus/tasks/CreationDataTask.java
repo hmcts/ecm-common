@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseData;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.servicebus.datamodel.CreationDataModel;
 import uk.gov.hmcts.ecm.common.model.servicebus.datamodel.DataModelParent;
@@ -24,33 +26,33 @@ public class CreationDataTask extends DataTaskParent {
         super(dataModelParent);
     }
 
-    public void run(SubmitEvent submitEvent) {
+    public void run(CaseDetails caseDetails) {
 
-        checkLeadClaimant(submitEvent);
+        checkLeadClaimant(caseDetails.getCaseData());
 
-        amendCreationFields(submitEvent);
+        amendCreationFields(caseDetails.getCaseData());
 
     }
 
-    private void checkLeadClaimant(SubmitEvent submitEvent) {
+    private void checkLeadClaimant(CaseData caseData) {
 
-        if (submitEvent.getCaseData().getEthosCaseReference()
+        if (caseData.getEthosCaseReference()
                 .equals(((CreationDataModel)dataModelParent).getLead())) {
             log.info("Adding lead");
-            submitEvent.getCaseData().setLeadClaimant(YES);
+            caseData.setLeadClaimant(YES);
         } else {
-            submitEvent.getCaseData().setLeadClaimant(NO);
+            caseData.setLeadClaimant(NO);
         }
 
     }
 
-    private void amendCreationFields(SubmitEvent submitEvent) {
+    private void amendCreationFields(CaseData caseData) {
 
         log.info("Moving case to Multiples case type");
-        submitEvent.getCaseData().setMultipleReference(((CreationDataModel) dataModelParent).getMultipleRef());
-        submitEvent.getCaseData().setEcmCaseType(MULTIPLE_CASE_TYPE);
-        submitEvent.getCaseData().setMultipleFlag(YES);
-        submitEvent.getCaseData().setMultipleReferenceLinkMarkUp(
+        caseData.setMultipleReference(((CreationDataModel) dataModelParent).getMultipleRef());
+        caseData.setEcmCaseType(MULTIPLE_CASE_TYPE);
+        caseData.setMultipleFlag(YES);
+        caseData.setMultipleReferenceLinkMarkUp(
                 ((CreationDataModel) dataModelParent).getMultipleReferenceLinkMarkUp());
 
     }

@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.servicebus.datamodel.DataModelParent;
 
@@ -21,7 +22,7 @@ public class CreationSingleDataTask extends DataTaskParent {
         super(dataModelParent);
     }
 
-    public void run(SubmitEvent submitEvent) {
+    public void run(CaseDetails caseDetails) {
 
     }
 

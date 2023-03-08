@@ -1,6 +1,7 @@
 package uk.gov.hmcts.ecm.common.helpers;
 
 import uk.gov.hmcts.ecm.common.model.ccd.CaseData;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.ccd.items.JudgementTypeItem;
 import uk.gov.hmcts.ecm.common.model.ccd.items.JurCodesTypeItem;
@@ -36,9 +37,9 @@ public class ServiceBusHelper {
                 .build();
     }
 
-    public static SubmitEvent generateSubmitEvent(String state) {
-        SubmitEvent submitEvent = new SubmitEvent();
-        submitEvent.setState(state);
+    public static CaseDetails generateCaseDetails(String state) {
+        CaseDetails caseDetails = new CaseDetails();
+        caseDetails.setState(state);
         CaseData caseData = new CaseData();
         caseData.setEthosCaseReference("4150002/2020");
         JurCodesType jurCodesType = new JurCodesType();
@@ -47,13 +48,13 @@ public class ServiceBusHelper {
         jurCodesTypeItem.setValue(jurCodesType);
         List<JurCodesTypeItem> jurCodesCollection = new ArrayList<>(Collections.singletonList(jurCodesTypeItem));
         caseData.setJurCodesCollection(jurCodesCollection);
-        submitEvent.setCaseData(caseData);
-        return submitEvent;
+        caseDetails.setCaseData(caseData);
+        return caseDetails;
     }
 
-    public static SubmitEvent generateSubmitEventDetailed(String state) {
-        SubmitEvent submitEvent = new SubmitEvent();
-        submitEvent.setState(state);
+    public static CaseDetails generateCaseDetailsDetailed(String state) {
+        CaseDetails caseDetails = new CaseDetails();
+        caseDetails.setState(state);
         CaseData caseData = new CaseData();
         caseData.setEthosCaseReference("4150002/2020");
         JurCodesType jurCodesType = new JurCodesType();
@@ -88,8 +89,8 @@ public class ServiceBusHelper {
         respondentSumTypeItem.setId(UUID.randomUUID().toString());
         respondentSumTypeItem.setValue(respondentSumType);
         caseData.setRespondentCollection(new ArrayList<>(Collections.singletonList(respondentSumTypeItem)));
-        submitEvent.setCaseData(caseData);
-        return submitEvent;
+        caseDetails.setCaseData(caseData);
+        return caseDetails;
     }
 
     public static CreationDataModel getCreationDataModel(String leadRef) {

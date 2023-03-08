@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseData;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.servicebus.datamodel.DataModelParent;
 
@@ -19,6 +21,6 @@ public abstract class DataTaskParent {
         this.dataModelParent = dataModelParent;
     }
 
-    public abstract void run(SubmitEvent submitEvent);
+    public abstract void run(CaseDetails caseDetails);
 
 }

@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import uk.gov.hmcts.ecm.common.model.ccd.CaseData;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.ccd.items.JurCodesTypeItem;
 import uk.gov.hmcts.ecm.common.model.ccd.items.RepresentedTypeRItem;
@@ -45,17 +46,17 @@ public class UpdateDataTask extends DataTaskParent {
         super(dataModelParent);
     }
 
-    public void run(SubmitEvent submitEvent) {
-        amendUpdateFields(submitEvent);
+    public void run(CaseDetails caseDetails) {
+        amendUpdateFields(caseDetails.getCaseData());
     }
 
-    private void amendUpdateFields(SubmitEvent submitEvent) {
+    private void amendUpdateFields(CaseData caseData) {
         var updateDataModel = ((UpdateDataModel) dataModelParent);
 
-        batchUpdate1(submitEvent.getCaseData(), updateDataModel);
-        batchUpdate2(submitEvent.getCaseData(), updateDataModel);
-        batchUpdate3(submitEvent.getCaseData(), updateDataModel);
-        resetJurisdictionCodes(submitEvent.getCaseData(), updateDataModel);
+        batchUpdate1(caseData, updateDataModel);
+        batchUpdate2(caseData, updateDataModel);
+        batchUpdate3(caseData, updateDataModel);
+        resetJurisdictionCodes(caseData, updateDataModel);
     }
 
     private void resetJurisdictionCodes(CaseData caseData, UpdateDataModel updateDataModel) {
