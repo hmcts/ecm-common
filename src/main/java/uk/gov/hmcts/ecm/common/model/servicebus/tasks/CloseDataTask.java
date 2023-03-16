@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseData;
+import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.servicebus.datamodel.CloseDataModel;
 import uk.gov.hmcts.ecm.common.model.servicebus.datamodel.DataModelParent;
@@ -28,45 +30,45 @@ public class CloseDataTask extends DataTaskParent {
     public void run(SubmitEvent submitEvent) {
 
         if (!submitEvent.getState().equals(CLOSED_STATE)) {
-            closeLogic(submitEvent);
+            closeLogic(submitEvent.getCaseData());
         } else {
             log.info("The case is already closed");
         }
 
     }
 
-    private void closeLogic(SubmitEvent submitEvent) {
+    private void closeLogic(CaseData caseData) {
 
         log.info("Moving to close state");
-        submitEvent.getCaseData().setPositionType(CASE_CLOSED_POSITION);
-        submitEvent.getCaseData().setClerkResponsible(((CloseDataModel)dataModelParent).getClerkResponsible());
-        submitEvent.getCaseData().setFileLocation(((CloseDataModel)dataModelParent).getFileLocation());
-        submitEvent.getCaseData().setCaseNotes(((CloseDataModel)dataModelParent).getNotes());
+        caseData.setPositionType(CASE_CLOSED_POSITION);
+        caseData.setClerkResponsible(((CloseDataModel)dataModelParent).getClerkResponsible());
+        caseData.setFileLocation(((CloseDataModel)dataModelParent).getFileLocation());
+        caseData.setCaseNotes(((CloseDataModel)dataModelParent).getNotes());
 
-        managingOffice(submitEvent, ((CloseDataModel)dataModelParent));
+        managingOffice(caseData, ((CloseDataModel)dataModelParent));
 
     }
 
-    private void managingOffice(SubmitEvent submitEvent, CloseDataModel closeDataModel) {
+    private void managingOffice(CaseData caseData, CloseDataModel closeDataModel) {
 
         if (!isNullOrEmpty(closeDataModel.getManagingOffice())) {
-            submitEvent.getCaseData().setManagingOffice(closeDataModel.getManagingOffice());
+            caseData.setManagingOffice(closeDataModel.getManagingOffice());
         }
 
         if (!isNullOrEmpty(closeDataModel.getFileLocationGlasgow())) {
-            submitEvent.getCaseData().setFileLocationGlasgow(closeDataModel.getFileLocationGlasgow());
+            caseData.setFileLocationGlasgow(closeDataModel.getFileLocationGlasgow());
         }
 
         if (!isNullOrEmpty(closeDataModel.getFileLocationAberdeen())) {
-            submitEvent.getCaseData().setFileLocationAberdeen(closeDataModel.getFileLocationAberdeen());
+            caseData.setFileLocationAberdeen(closeDataModel.getFileLocationAberdeen());
         }
 
         if (!isNullOrEmpty(closeDataModel.getFileLocationDundee())) {
-            submitEvent.getCaseData().setFileLocationDundee(closeDataModel.getFileLocationDundee());
+            caseData.setFileLocationDundee(closeDataModel.getFileLocationDundee());
         }
 
         if (!isNullOrEmpty(closeDataModel.getFileLocationEdinburgh())) {
-            submitEvent.getCaseData().setFileLocationEdinburgh(closeDataModel.getFileLocationEdinburgh());
+            caseData.setFileLocationEdinburgh(closeDataModel.getFileLocationEdinburgh());
         }
 
     }
