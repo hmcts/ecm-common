@@ -90,6 +90,10 @@ public class UpdateDataTask extends DataTaskParent {
             caseData.setReceiptDate(updateDataModel.getReceiptDate());
         }
 
+        if (!isNullOrEmpty(updateDataModel.getConciliationTrack())) {
+            caseData.setConciliationTrack(updateDataModel.getConciliationTrack());
+        }
+
         updateManagingOffice(caseData, updateDataModel);
     }
 

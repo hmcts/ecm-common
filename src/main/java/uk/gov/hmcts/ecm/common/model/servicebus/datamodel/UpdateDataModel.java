@@ -77,4 +77,6 @@ public class UpdateDataModel extends DataModelParent {
 
     @JsonProperty("subMultiple")
     private String subMultiple;
+    @JsonProperty("conciliationTrack")
+    private String conciliationTrack;
 }
