@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import uk.gov.hmcts.ecm.common.model.ccd.CaseData;
-import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.ccd.items.JurCodesTypeItem;
 import uk.gov.hmcts.ecm.common.model.ccd.items.RepresentedTypeRItem;
@@ -31,6 +30,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.BATCH_UPDATE_RESPONDENT_ADD;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.NO;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.YES;
 
@@ -195,7 +196,9 @@ public class UpdateDataTask extends DataTaskParent {
         }
 
         if (updateDataModel.getRespondentSumType() != null) {
-            updateRespondentSumType(caseData, updateDataModel.getRespondentSumType());
+            String respondentUpdateType = updateDataModel.getBatchRespondentUpdateType();
+            updateRespondentSumType(caseData, updateDataModel.getRespondentSumType(),
+                respondentUpdateType);
         }
 
         if (updateDataModel.getJudgementType() != null) {
@@ -210,23 +213,37 @@ public class UpdateDataTask extends DataTaskParent {
         }
     }
 
-    private void updateRespondentSumType(CaseData caseData, RespondentSumType respondentSumType) {
+    private void updateRespondentSumType(CaseData caseData,
+                                         RespondentSumType respondentSumType,
+                                         String respondentUpdateType) {
         if (caseData.getRespondentCollection() != null) {
-            caseData.getRespondentCollection().add(createRespondentSumTypeItem(respondentSumType));
-
+            //check if update is inserting new entry
+           if(!Strings.isNullOrEmpty(respondentUpdateType)
+               && BATCH_UPDATE_RESPONDENT_ADD.equals(respondentUpdateType)) {
+               if (!isDuplicateRespondent(caseData, respondentSumType)) {
+                   caseData.getRespondentCollection().add(createRespondentSumTypeItem(respondentSumType));
+               }
+            } else { // update existing respondent
+               caseData.getRespondentCollection()
+                   .stream()
+                   .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
+                   .forEach( respondent -> respondent.setValue(respondentSumType));
+            }
         } else {
             caseData.setRespondentCollection(
                     new ArrayList<>(Collections.singletonList(createRespondentSumTypeItem(respondentSumType))));
         }
+    }
 
+    private boolean isDuplicateRespondent(CaseData caseData, RespondentSumType respondentSumType) {
+        return caseData.getRespondentCollection().stream()
+            .anyMatch(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()));
     }
 
     private RespondentSumTypeItem createRespondentSumTypeItem(RespondentSumType respondentSumType) {
         var respondentSumTypeItem = new RespondentSumTypeItem();
-
         respondentSumTypeItem.setId(UUID.randomUUID().toString());
         respondentSumTypeItem.setValue(respondentSumType);
-
         return respondentSumTypeItem;
     }
 

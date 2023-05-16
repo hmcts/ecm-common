@@ -60,6 +60,9 @@ public class UpdateDataModel extends DataModelParent {
     @JsonProperty("outcomeUpdate")
     private RespondentSumType respondentSumType;
 
+    @JsonProperty("batchRespondentUpdateType")
+    private String batchRespondentUpdateType;
+
     @JsonProperty("judgementType")
     private JudgementType judgementType;
 
