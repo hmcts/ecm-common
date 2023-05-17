@@ -1,7 +1,14 @@
 package uk.gov.hmcts.ecm.common.model.servicebus.tasks;
 
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
+import uk.gov.hmcts.ecm.common.model.ccd.items.RespondentSumTypeItem;
+import uk.gov.hmcts.ecm.common.model.ccd.types.RespondentSumType;
+import uk.gov.hmcts.ecm.common.model.servicebus.datamodel.UpdateDataModel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -9,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UpdateDataTaskTest {
 
     CaseDataBuilder caseDataBuilder;
@@ -142,5 +150,100 @@ public class UpdateDataTaskTest {
         var task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
         assertEquals("SubMultiple", submitEvent.getCaseData().getSubMultipleName());
+    }
+
+    @Test
+    public void addNewRespondentDetails_DuplicateRespondentExists() {
+        List<RespondentSumTypeItem> respondentSumTypeItems = List.of(
+            getRespondentSumTypeItem("123", "TestRespondentOne", "Email"),
+            getRespondentSumTypeItem("345", "TestRespondentTwo", "Phone"),
+            getRespondentSumTypeItem("678", "TestRespondentThree", "Email"));
+        CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
+        SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
+        UpdateDataModel updateModel = updateDataModelBuilder.build();
+        updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Add");
+        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentOne", "Phone"));
+
+        UpdateDataTask task = new UpdateDataTask(updateModel);
+        task.run(submitEvent);
+        assertEquals(3, submitEvent.getCaseData().getRespondentCollection().size());
+        RespondentSumType respondent = submitEvent.getCaseData().getRespondentCollection().get(0).getValue();
+        assertEquals(respondentSumTypeItems.get(0).getValue().getRespondentName(), respondent.getRespondentName());
+        // RespondentContactPreference should not be updated
+        assertEquals("Email", respondent.getRespondentContactPreference());
+    }
+
+    @Test
+    public void addNewRespondentDetails_NoDuplicateRespondentExists() {
+        List<RespondentSumTypeItem> respondentSumTypeItems = List.of(
+            getRespondentSumTypeItem("33", "TestRespondentOne", "Email"),
+            getRespondentSumTypeItem("43", "TestRespondentTwo", "Phone"),
+            getRespondentSumTypeItem("53", "TestRespondentThree", "Email"));
+        CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
+        SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
+        UpdateDataModel updateModel = updateDataModelBuilder.build();
+        updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Add");
+        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentFour", "Email"));
+
+        UpdateDataTask task = new UpdateDataTask(updateModel);
+        task.run(submitEvent);
+
+        assertEquals(4, submitEvent.getCaseData().getRespondentCollection().size());
+        assertEquals(updateModel.getRespondentSumType().getRespondentName(),
+            submitEvent.getCaseData().getRespondentCollection().get(3).getValue().getRespondentName());
+    }
+
+    @Test
+    public void updateRespondentDetails_DuplicateExists() {
+        List<RespondentSumTypeItem> respondentSumTypeItems = List.of(
+            getRespondentSumTypeItem("20", "TestRespondentOne", "Email"),
+            getRespondentSumTypeItem("30", "TestRespondentTwo", "Phone"),
+            getRespondentSumTypeItem("40", "TestRespondentThree", "Phone"));
+        CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
+        SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
+        UpdateDataModel updateModel = updateDataModelBuilder.build();
+        updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Update");
+        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentThree", "Email"));
+
+        UpdateDataTask task = new UpdateDataTask(updateModel);
+        task.run(submitEvent);
+
+        assertEquals(3, submitEvent.getCaseData().getRespondentCollection().size());
+        assertEquals(respondentSumTypeItems.get(2).getValue().getRespondentContactPreference(),
+            submitEvent.getCaseData().getRespondentCollection().get(2).getValue().getRespondentContactPreference());
+    }
+
+    @Test
+    public void updateRespondentDetails_NoDuplicateExists() {
+        List<RespondentSumTypeItem> respondentSumTypeItems = List.of(
+            getRespondentSumTypeItem("260", "TestRespondentOne", "Email"),
+            getRespondentSumTypeItem("250", "TestRespondentTwo", "Phone"));
+        CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
+        SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
+        UpdateDataModel updateModel = updateDataModelBuilder.build();
+        updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Update");
+        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentFive", "Email"));
+
+        UpdateDataTask task = new UpdateDataTask(updateModel);
+        task.run(submitEvent);
+
+        assertEquals(2, submitEvent.getCaseData().getRespondentCollection().size());
+    }
+
+    private RespondentSumTypeItem getRespondentSumTypeItem(String id, String respondentName, String contactPreference) {
+        RespondentSumTypeItem respondentSumTypeItem = new RespondentSumTypeItem();
+        respondentSumTypeItem.setId(id);
+        RespondentSumType respondentSumType = new RespondentSumType();
+        respondentSumType.setRespondentName(respondentName);
+        respondentSumType.setRespondentContactPreference(contactPreference);
+        respondentSumTypeItem.setValue(respondentSumType);
+        return respondentSumTypeItem;
+    }
+
+    private RespondentSumType getUpdateRespondentSumType(String name, String contactPreference) {
+        RespondentSumType respondentSumTypeNew = new RespondentSumType();
+        respondentSumTypeNew.setRespondentName(name);
+        respondentSumTypeNew.setRespondentContactPreference(contactPreference);
+        return respondentSumTypeNew;
     }
 }

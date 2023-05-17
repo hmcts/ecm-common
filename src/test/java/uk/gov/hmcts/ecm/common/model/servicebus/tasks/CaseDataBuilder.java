@@ -1,12 +1,13 @@
 package uk.gov.hmcts.ecm.common.model.servicebus.tasks;
 
 import uk.gov.hmcts.ecm.common.model.ccd.CaseData;
-import uk.gov.hmcts.ecm.common.model.ccd.CaseDetails;
 import uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent;
 import uk.gov.hmcts.ecm.common.model.ccd.items.JurCodesTypeItem;
 import uk.gov.hmcts.ecm.common.model.ccd.types.JurCodesType;
+import uk.gov.hmcts.ecm.common.model.ccd.items.RespondentSumTypeItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CaseDataBuilder {
     private final CaseData caseData = new CaseData();
@@ -23,6 +24,14 @@ public class CaseDataBuilder {
         }
         caseData.getJurCodesCollection().add(jurCodesTypeItem);
 
+        return this;
+    }
+
+    public CaseDataBuilder withRespondentCollection(List<RespondentSumTypeItem> items) {
+        if (caseData.getRespondentCollection() == null) {
+            caseData.setRespondentCollection(new ArrayList<>());
+        }
+        items.forEach(item -> caseData.getRespondentCollection().add(item));
         return this;
     }
 
