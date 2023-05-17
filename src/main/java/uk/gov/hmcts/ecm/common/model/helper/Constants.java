@@ -145,7 +145,7 @@ public class Constants {
     public static final String CLAIMANT_REP = "CLAIMANT REP : ";
     public static final String RESPONDENT = "RESPONDENT : ";
     public static final String RESPONDENT_REP = "RESPONDENT REP : ";
-    public static final String BATCH_UPDATE_RESPONDENT_ADD = "Add";
+    public static final String BATCH_UPDATE_RESPONDENT_ADD = "Batch Update Respondent - Add";
 
     public static final String TEL = "Tel: ";
     public static final String REF = "Ref: ";

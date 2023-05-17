@@ -1,6 +1,5 @@
 package uk.gov.hmcts.ecm.common.model.servicebus.tasks;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -162,7 +161,7 @@ public class UpdateDataTaskTest {
         CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
         SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
         UpdateDataModel updateModel = updateDataModelBuilder.build();
-        updateModel.setBatchRespondentUpdateType("Add");
+        updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Add");
         updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentOne", "Phone"));
 
         UpdateDataTask task = new UpdateDataTask(updateModel);
@@ -183,7 +182,7 @@ public class UpdateDataTaskTest {
         CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
         SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
         UpdateDataModel updateModel = updateDataModelBuilder.build();
-        updateModel.setBatchRespondentUpdateType("Add");
+        updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Add");
         updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentFour", "Email"));
 
         UpdateDataTask task = new UpdateDataTask(updateModel);
@@ -203,7 +202,7 @@ public class UpdateDataTaskTest {
         CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
         SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
         UpdateDataModel updateModel = updateDataModelBuilder.build();
-        updateModel.setBatchRespondentUpdateType("Update");
+        updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Update");
         updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentThree", "Email"));
 
         UpdateDataTask task = new UpdateDataTask(updateModel);
@@ -222,7 +221,7 @@ public class UpdateDataTaskTest {
         CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
         SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
         UpdateDataModel updateModel = updateDataModelBuilder.build();
-        updateModel.setBatchRespondentUpdateType("Update");
+        updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Update");
         updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentFive", "Email"));
 
         UpdateDataTask task = new UpdateDataTask(updateModel);
