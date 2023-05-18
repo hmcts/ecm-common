@@ -241,7 +241,7 @@ public class UpdateDataTask extends DataTaskParent {
                    createRespondentSumTypeItem(respondentSumType))));
                return;
            }
-            // copy unique elements list from existing case respondent collection
+
             List<RespondentSumTypeItem> existingRespondents = caseData.getRespondentCollection();
             List<RespondentSumTypeItem> duplicateRespondents    = existingRespondents.stream()
                 .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
