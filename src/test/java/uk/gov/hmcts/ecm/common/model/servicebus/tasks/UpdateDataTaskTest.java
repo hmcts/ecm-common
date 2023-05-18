@@ -155,14 +155,14 @@ public class UpdateDataTaskTest {
     @Test
     public void addNewRespondentDetails_DuplicateRespondentExists() {
         List<RespondentSumTypeItem> respondentSumTypeItems = List.of(
-            getRespondentSumTypeItem("123", "TestRespondentOne", "Email"),
-            getRespondentSumTypeItem("345", "TestRespondentTwo", "Phone"),
-            getRespondentSumTypeItem("678", "TestRespondentThree", "Email"));
+            getRespondentSumTypeItem("123", "TestRespondent1", "Email"),
+            getRespondentSumTypeItem("345", "TestRespondent2", "Phone"),
+            getRespondentSumTypeItem("678", "TestRespondent3", "Email"));
         CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
         SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
         UpdateDataModel updateModel = updateDataModelBuilder.build();
         updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Add");
-        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentOne", "Phone"));
+        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondent1", "Phone"));
 
         UpdateDataTask task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
@@ -170,20 +170,20 @@ public class UpdateDataTaskTest {
         RespondentSumType respondent = submitEvent.getCaseData().getRespondentCollection().get(0).getValue();
         assertEquals(respondentSumTypeItems.get(0).getValue().getRespondentName(), respondent.getRespondentName());
         // RespondentContactPreference should not be updated
-        assertEquals("Email", respondent.getRespondentContactPreference());
+        assertEquals("Phone", respondent.getRespondentContactPreference());
     }
 
     @Test
     public void addNewRespondentDetails_NoDuplicateRespondentExists() {
         List<RespondentSumTypeItem> respondentSumTypeItems = List.of(
-            getRespondentSumTypeItem("33", "TestRespondentOne", "Email"),
-            getRespondentSumTypeItem("43", "TestRespondentTwo", "Phone"),
-            getRespondentSumTypeItem("53", "TestRespondentThree", "Email"));
+            getRespondentSumTypeItem("33", "TestRespondent1", "Email"),
+            getRespondentSumTypeItem("43", "TestRespondent2", "Phone"),
+            getRespondentSumTypeItem("53", "TestRespondent3", "Email"));
         CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
         SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
         UpdateDataModel updateModel = updateDataModelBuilder.build();
         updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Add");
-        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentFour", "Email"));
+        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondent4", "Email"));
 
         UpdateDataTask task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
@@ -196,14 +196,14 @@ public class UpdateDataTaskTest {
     @Test
     public void updateRespondentDetails_DuplicateExists() {
         List<RespondentSumTypeItem> respondentSumTypeItems = List.of(
-            getRespondentSumTypeItem("20", "TestRespondentOne", "Email"),
-            getRespondentSumTypeItem("30", "TestRespondentTwo", "Phone"),
-            getRespondentSumTypeItem("40", "TestRespondentThree", "Phone"));
+            getRespondentSumTypeItem("20", "TestRespondent1", "Email"),
+            getRespondentSumTypeItem("30", "TestRespondent2", "Phone"),
+            getRespondentSumTypeItem("40", "TestRespondent3", "Phone"));
         CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
         SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
         UpdateDataModel updateModel = updateDataModelBuilder.build();
         updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Update");
-        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentThree", "Email"));
+        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondent3", "Email"));
 
         UpdateDataTask task = new UpdateDataTask(updateModel);
         task.run(submitEvent);
@@ -216,13 +216,13 @@ public class UpdateDataTaskTest {
     @Test
     public void updateRespondentDetails_NoDuplicateExists() {
         List<RespondentSumTypeItem> respondentSumTypeItems = List.of(
-            getRespondentSumTypeItem("260", "TestRespondentOne", "Email"),
-            getRespondentSumTypeItem("250", "TestRespondentTwo", "Phone"));
+            getRespondentSumTypeItem("260", "TestRespondent1", "Email"),
+            getRespondentSumTypeItem("250", "TestRespondent2", "Phone"));
         CaseDataBuilder myCaseDataBuilder  = caseDataBuilder.withRespondentCollection(respondentSumTypeItems);
         SubmitEvent submitEvent = myCaseDataBuilder.buildAsSubmitEvent("Accepted");
         UpdateDataModel updateModel = updateDataModelBuilder.build();
         updateModel.setBatchRespondentUpdateType("Batch Update Respondent - Update");
-        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondentFive", "Email"));
+        updateModel.setRespondentSumType(getUpdateRespondentSumType("TestRespondent5", "Email"));
 
         UpdateDataTask task = new UpdateDataTask(updateModel);
         task.run(submitEvent);

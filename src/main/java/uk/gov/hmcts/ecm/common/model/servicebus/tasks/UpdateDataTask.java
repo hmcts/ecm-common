@@ -24,14 +24,14 @@ import uk.gov.hmcts.ecm.common.model.servicebus.datamodel.UpdateDataModel;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-
-import static uk.gov.hmcts.ecm.common.model.helper.Constants.BATCH_UPDATE_RESPONDENT_ADD;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.BATCH_UPDATE_RESPONDENT_TYPE_UPDATE;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.NO;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.YES;
 
@@ -104,7 +104,6 @@ public class UpdateDataTask extends DataTaskParent {
         }
     }
 
-
     private void dateToCurrentPosition(CaseData caseData) {
         if (isNullOrEmpty(caseData.getCurrentPosition())
                 || !caseData.getPositionType().equals(caseData.getCurrentPosition())) {
@@ -140,8 +139,8 @@ public class UpdateDataTask extends DataTaskParent {
     }
 
     private boolean shouldClaimantRepresentativeBeRemoved(CaseData caseData, UpdateDataModel updateDataModel) {
-        if (Strings.isNullOrEmpty(updateDataModel.getIsClaimantRepRemovalUpdate()) ||
-                updateDataModel.getIsClaimantRepRemovalUpdate().equals(NO)) {
+        if (Strings.isNullOrEmpty(updateDataModel.getIsClaimantRepRemovalUpdate())
+            || updateDataModel.getIsClaimantRepRemovalUpdate().equals(NO)) {
             return false;
         } else if (!Strings.isNullOrEmpty(updateDataModel.getIsClaimantRepRemovalUpdate())
                 && updateDataModel.getIsClaimantRepRemovalUpdate().equals(YES)
@@ -216,28 +215,47 @@ public class UpdateDataTask extends DataTaskParent {
     private void updateRespondentSumType(CaseData caseData,
                                          RespondentSumType respondentSumType,
                                          String respondentUpdateType) {
-        if (caseData.getRespondentCollection() != null) {
-            //check if update is inserting new entry
-           if(!Strings.isNullOrEmpty(respondentUpdateType)
-               && BATCH_UPDATE_RESPONDENT_ADD.equals(respondentUpdateType)) {
-               if (!isDuplicateRespondent(caseData, respondentSumType)) {
-                   caseData.getRespondentCollection().add(createRespondentSumTypeItem(respondentSumType));
-               }
-            } else { // update existing respondent
-               caseData.getRespondentCollection()
-                   .stream()
-                   .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
-                   .forEach( respondent -> respondent.setValue(respondentSumType));
-            }
-        } else {
-            caseData.setRespondentCollection(
-                    new ArrayList<>(Collections.singletonList(createRespondentSumTypeItem(respondentSumType))));
-        }
-    }
+        log.info("RespondentUpdateType provided: " + respondentUpdateType);
 
-    private boolean isDuplicateRespondent(CaseData caseData, RespondentSumType respondentSumType) {
-        return caseData.getRespondentCollection().stream()
-            .anyMatch(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()));
+        boolean isValidUpdateRequest = !Strings.isNullOrEmpty(respondentUpdateType)
+            && BATCH_UPDATE_RESPONDENT_TYPE_UPDATE.equals(respondentUpdateType);
+
+        // An invalid update as it requests updating non existent respondent/s
+        if (isValidUpdateRequest && caseData.getRespondentCollection() == null) {
+            log.info("Case " + caseData.getEthosCaseReference() + " has no respondents. No respondent update made");
+            return;
+        }
+        // updating an existing respondent
+        if (isValidUpdateRequest) {
+            log.info("Respondent batch update: existing respondent " + respondentSumType.getRespondentName()
+                + " is updated.");
+            caseData.getRespondentCollection()
+               .stream()
+               .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
+               .forEach( respondent -> respondent.setValue(respondentSumType));
+       } else { // update is  inserting new entry
+            if (caseData.getRespondentCollection() == null) {
+                log.info("Respondent "+ respondentSumType.getRespondentName()
+                   + " added to an empty Respondent Collection.");
+                caseData.setRespondentCollection(new ArrayList<>(Collections.singletonList(
+                   createRespondentSumTypeItem(respondentSumType))));
+               return;
+           }
+            // copy unique elements list from existing case respondent collection
+            List<RespondentSumTypeItem> existingRespondents = caseData.getRespondentCollection();
+            List<RespondentSumTypeItem> duplicateRespondents    = existingRespondents.stream()
+                .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
+                .collect(Collectors.toList());
+            duplicateRespondents.forEach(existingRespondent ->
+                caseData.getRespondentCollection().remove(existingRespondent));
+            log.info("Respondent batch update: new respondent " + respondentSumType.getRespondentName()
+               + " is added.");
+            caseData.getRespondentCollection().add(createRespondentSumTypeItem(respondentSumType));
+            List<RespondentSumTypeItem> respondentsOrderedByName = caseData.getRespondentCollection().stream()
+                .sorted(Comparator.comparing(r -> r.getValue().getRespondentName())).collect(Collectors.toList());
+           caseData.getRespondentCollection().clear();
+           caseData.setRespondentCollection(respondentsOrderedByName);
+        }
     }
 
     private RespondentSumTypeItem createRespondentSumTypeItem(RespondentSumType respondentSumType) {
