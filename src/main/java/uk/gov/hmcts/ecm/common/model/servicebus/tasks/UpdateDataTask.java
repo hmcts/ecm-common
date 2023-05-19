@@ -216,31 +216,25 @@ public class UpdateDataTask extends DataTaskParent {
                                          RespondentSumType respondentSumType,
                                          String respondentUpdateType) {
         log.info("RespondentUpdateType provided: " + respondentUpdateType);
-
-        boolean isValidUpdateRequest = !Strings.isNullOrEmpty(respondentUpdateType)
+        boolean isDuplicateRespondent = isDuplicateRespondent(caseData, respondentSumType);
+        boolean isUpdateRequest = !Strings.isNullOrEmpty(respondentUpdateType)
             && BATCH_UPDATE_RESPONDENT_TYPE_UPDATE.equals(respondentUpdateType);
 
-        // An invalid update as it requests updating non existent respondent/s
-        if (isValidUpdateRequest && caseData.getRespondentCollection() == null) {
-            log.info("Case " + caseData.getEthosCaseReference() + " has no respondents. No respondent update made");
+        if(isUpdateRequest && !isDuplicateRespondent) {
+            log.info("Invalid update request. Case " + caseData.getEthosCaseReference()
+                + " has no duplicate respondent with name " + respondentSumType.getRespondentName() + ".");
             return;
         }
+        // An invalid update as it requests updating non existent respondent/s
+        if (isUpdateRequest && caseData.getRespondentCollection() == null) {
+            log.info("Case " + caseData.getEthosCaseReference() + " has no respondents. No respondent update made.");
+            return;
+        }
+
         // updating an existing respondent
-        if (isValidUpdateRequest) {
+        if (isUpdateRequest) {
             log.info("Respondent batch update: existing respondent " + respondentSumType.getRespondentName()
                 + " is updated.");
-            caseData.getRespondentCollection()
-               .stream()
-               .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
-               .forEach( respondent -> respondent.setValue(respondentSumType));
-       } else { // update is  inserting new entry
-            if (caseData.getRespondentCollection() == null) {
-                log.info("Respondent "+ respondentSumType.getRespondentName()
-                   + " added to an empty Respondent Collection.");
-                caseData.setRespondentCollection(new ArrayList<>(Collections.singletonList(
-                   createRespondentSumTypeItem(respondentSumType))));
-               return;
-           }
 
             List<RespondentSumTypeItem> existingRespondents = caseData.getRespondentCollection();
             List<RespondentSumTypeItem> duplicateRespondents    = existingRespondents.stream()
@@ -249,13 +243,38 @@ public class UpdateDataTask extends DataTaskParent {
             duplicateRespondents.forEach(existingRespondent ->
                 caseData.getRespondentCollection().remove(existingRespondent));
             log.info("Respondent batch update: new respondent " + respondentSumType.getRespondentName()
-               + " is added.");
+                + " is added.");
             caseData.getRespondentCollection().add(createRespondentSumTypeItem(respondentSumType));
             List<RespondentSumTypeItem> respondentsOrderedByName = caseData.getRespondentCollection().stream()
                 .sorted(Comparator.comparing(r -> r.getValue().getRespondentName())).collect(Collectors.toList());
-           caseData.getRespondentCollection().clear();
-           caseData.setRespondentCollection(respondentsOrderedByName);
+            caseData.getRespondentCollection().clear();
+            caseData.setRespondentCollection(respondentsOrderedByName);
+
+            caseData.getRespondentCollection()
+               .stream()
+               .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
+               .forEach( respondent -> respondent.setValue(respondentSumType));
+       } else { // update is inserting a new entry
+            if(!isDuplicateRespondent(caseData, respondentSumType)) {
+
+                if (caseData.getRespondentCollection() == null) {
+                    log.info("Respondent "+ respondentSumType.getRespondentName()
+                        + " added to an empty Respondent Collection.");
+                    caseData.setRespondentCollection(new ArrayList<>(Collections.singletonList(
+                        createRespondentSumTypeItem(respondentSumType))));
+                    return;
+                }
+
+                log.info("Respondent batch update: new respondent " + respondentSumType.getRespondentName()
+                    + " is added.");
+                caseData.getRespondentCollection().add(createRespondentSumTypeItem(respondentSumType));
+            }
         }
+    }
+
+    private boolean isDuplicateRespondent(CaseData caseData, RespondentSumType respondentSumType) {
+        return caseData.getRespondentCollection().stream()
+            .anyMatch(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()));
     }
 
     private RespondentSumTypeItem createRespondentSumTypeItem(RespondentSumType respondentSumType) {

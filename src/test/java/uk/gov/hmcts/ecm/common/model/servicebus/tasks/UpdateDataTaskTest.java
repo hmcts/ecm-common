@@ -168,9 +168,10 @@ public class UpdateDataTaskTest {
         task.run(submitEvent);
         assertEquals(3, submitEvent.getCaseData().getRespondentCollection().size());
         RespondentSumType respondent = submitEvent.getCaseData().getRespondentCollection().get(0).getValue();
-        assertEquals(respondentSumTypeItems.get(0).getValue().getRespondentName(), respondent.getRespondentName());
+        RespondentSumType duplicateRespondent = respondentSumTypeItems.get(0).getValue();
+        assertEquals(duplicateRespondent.getRespondentName(), respondent.getRespondentName());
         // RespondentContactPreference should not be updated
-        assertEquals("Phone", respondent.getRespondentContactPreference());
+        assertEquals(duplicateRespondent.getRespondentContactPreference(), respondent.getRespondentContactPreference());
     }
 
     @Test
@@ -191,6 +192,8 @@ public class UpdateDataTaskTest {
         assertEquals(4, submitEvent.getCaseData().getRespondentCollection().size());
         assertEquals(updateModel.getRespondentSumType().getRespondentName(),
             submitEvent.getCaseData().getRespondentCollection().get(3).getValue().getRespondentName());
+        assertEquals(updateModel.getRespondentSumType().getRespondentContactPreference(),
+            submitEvent.getCaseData().getRespondentCollection().get(3).getValue().getRespondentContactPreference());
     }
 
     @Test
@@ -209,7 +212,9 @@ public class UpdateDataTaskTest {
         task.run(submitEvent);
 
         assertEquals(3, submitEvent.getCaseData().getRespondentCollection().size());
-        assertEquals(respondentSumTypeItems.get(2).getValue().getRespondentContactPreference(),
+        assertEquals(updateModel.getRespondentSumType().getRespondentName(),
+            submitEvent.getCaseData().getRespondentCollection().get(2).getValue().getRespondentName());
+        assertEquals(updateModel.getRespondentSumType().getRespondentContactPreference(),
             submitEvent.getCaseData().getRespondentCollection().get(2).getValue().getRespondentContactPreference());
     }
 
