@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.BATCH_UPDATE_RESPONDENT_TYPE_UPDATE;
@@ -219,50 +220,50 @@ public class UpdateDataTask extends DataTaskParent {
         boolean isUpdateRequest = !Strings.isNullOrEmpty(respondentUpdateType)
             && BATCH_UPDATE_RESPONDENT_TYPE_UPDATE.equals(respondentUpdateType);
 
-        if(isUpdateRequest && !isDuplicateRespondent) {
-            log.info("Invalid update request. Case " + caseData.getEthosCaseReference()
-                + " has no duplicate respondent with name " + respondentSumType.getRespondentName() + ".");
-            return;
-        }
-        // An invalid update as it requests updating non-existent respondent/s
-        if (isUpdateRequest && caseData.getRespondentCollection() == null) {
-            log.info("Case " + caseData.getEthosCaseReference() + " has no respondents. No respondent update made.");
-            return;
-        }
-
-        // updating an existing respondent
+        // update is modifying an existing respondent
         if (isUpdateRequest) {
-            List<RespondentSumTypeItem> existingRespondents = caseData.getRespondentCollection();
-            List<RespondentSumTypeItem> duplicateRespondents    = existingRespondents.stream()
+            if(!isDuplicateRespondent){
+                log.info("Case: " + caseData.getEthosCaseReference() + ". "
+                    + "No duplicate respondent found to update.");
+                return;
+            }
+
+            List<RespondentSumTypeItem> duplicateRespondents    = caseData.getRespondentCollection().stream()
                 .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
                 .collect(Collectors.toList());
-            duplicateRespondents.forEach(existingRespondent ->
-                caseData.getRespondentCollection().remove(existingRespondent));
-            log.info("Respondent batch update: new respondent " + respondentSumType.getRespondentName()
-                + " is added.");
-            caseData.getRespondentCollection().add(createRespondentSumTypeItem(respondentSumType));
-            List<RespondentSumTypeItem> respondentsOrderedByName = caseData.getRespondentCollection().stream()
-                .sorted(Comparator.comparing(r -> r.getValue().getRespondentName())).collect(Collectors.toList());
-            caseData.getRespondentCollection().clear();
-            caseData.setRespondentCollection(respondentsOrderedByName);
-            log.info("Respondent batch update: existing respondent " + respondentSumType.getRespondentName()
-                + " is updated.");
+            RespondentSumTypeItem respondentToUpdate = duplicateRespondents.get(0);
+            respondentToUpdate.setValue(respondentSumType);
+            sortModifiedRespondentCollection(caseData);
+            log.info("Case: " + caseData.getEthosCaseReference() + ". "
+                + "Respondent batch update: existing respondent is updated.");
        } else { // update is inserting a new entry
-            if(!isDuplicateRespondent(caseData, respondentSumType)) {
+            if(isDuplicateRespondent){
+                return;
+            }
 
-                if (caseData.getRespondentCollection() == null) {
-                    log.info("Respondent "+ respondentSumType.getRespondentName()
-                        + " added to an empty Respondent Collection.");
-                    caseData.setRespondentCollection(new ArrayList<>(Collections.singletonList(
-                        createRespondentSumTypeItem(respondentSumType))));
-                    return;
-                }
-
-                log.info("Respondent batch update: new respondent " + respondentSumType.getRespondentName()
-                    + " is added.");
+            if (caseData.getRespondentCollection() == null) {
+                log.info("Case: " + caseData.getEthosCaseReference() + ". "
+                    + "Respondent batch update: Respondent added to an empty respondent Collection.");
+                caseData.setRespondentCollection(new ArrayList<>(Collections.singletonList(
+                    createRespondentSumTypeItem(respondentSumType))));
+            } else {
+                log.info("Case: " + caseData.getEthosCaseReference() + ". "
+                    + "Respondent batch update: new respondent is added.");
                 caseData.getRespondentCollection().add(createRespondentSumTypeItem(respondentSumType));
             }
+            sortModifiedRespondentCollection(caseData);
         }
+    }
+
+    private void sortModifiedRespondentCollection(CaseData caseData) {
+        List<RespondentSumTypeItem> tempRespondentCollection = caseData.getRespondentCollection();
+        List<RespondentSumTypeItem> continuingRespondent = tempRespondentCollection.stream()
+            .filter(r-> YES.equals(r.getValue().getResponseContinue())).collect(Collectors.toList());
+        List<RespondentSumTypeItem> notContinuingRespondent = tempRespondentCollection.stream()
+            .filter(r-> NO.equals(r.getValue().getResponseContinue())).collect(Collectors.toList());
+        caseData.getRespondentCollection().clear();
+        caseData.setRespondentCollection(Stream.concat(continuingRespondent.stream(),
+            notContinuingRespondent.stream()).collect(Collectors.toList()));
     }
 
     private boolean isDuplicateRespondent(CaseData caseData, RespondentSumType respondentSumType) {
