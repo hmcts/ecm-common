@@ -225,7 +225,7 @@ public class UpdateDataTask extends DataTaskParent {
                 + " has no duplicate respondent with name " + respondentSumType.getRespondentName() + ".");
             return;
         }
-        // An invalid update as it requests updating non existent respondent/s
+        // An invalid update as it requests updating non-existent respondent/s
         if (isUpdateRequest && caseData.getRespondentCollection() == null) {
             log.info("Case " + caseData.getEthosCaseReference() + " has no respondents. No respondent update made.");
             return;
@@ -249,11 +249,6 @@ public class UpdateDataTask extends DataTaskParent {
                 .sorted(Comparator.comparing(r -> r.getValue().getRespondentName())).collect(Collectors.toList());
             caseData.getRespondentCollection().clear();
             caseData.setRespondentCollection(respondentsOrderedByName);
-
-            caseData.getRespondentCollection()
-               .stream()
-               .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
-               .forEach( respondent -> respondent.setValue(respondentSumType));
        } else { // update is inserting a new entry
             if(!isDuplicateRespondent(caseData, respondentSumType)) {
 
