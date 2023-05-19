@@ -215,7 +215,6 @@ public class UpdateDataTask extends DataTaskParent {
     private void updateRespondentSumType(CaseData caseData,
                                          RespondentSumType respondentSumType,
                                          String respondentUpdateType) {
-        log.info("RespondentUpdateType provided: " + respondentUpdateType);
         boolean isDuplicateRespondent = isDuplicateRespondent(caseData, respondentSumType);
         boolean isUpdateRequest = !Strings.isNullOrEmpty(respondentUpdateType)
             && BATCH_UPDATE_RESPONDENT_TYPE_UPDATE.equals(respondentUpdateType);
@@ -233,9 +232,6 @@ public class UpdateDataTask extends DataTaskParent {
 
         // updating an existing respondent
         if (isUpdateRequest) {
-            log.info("Respondent batch update: existing respondent " + respondentSumType.getRespondentName()
-                + " is updated.");
-
             List<RespondentSumTypeItem> existingRespondents = caseData.getRespondentCollection();
             List<RespondentSumTypeItem> duplicateRespondents    = existingRespondents.stream()
                 .filter(r -> r.getValue().getRespondentName().equals(respondentSumType.getRespondentName()))
@@ -249,6 +245,8 @@ public class UpdateDataTask extends DataTaskParent {
                 .sorted(Comparator.comparing(r -> r.getValue().getRespondentName())).collect(Collectors.toList());
             caseData.getRespondentCollection().clear();
             caseData.setRespondentCollection(respondentsOrderedByName);
+            log.info("Respondent batch update: existing respondent " + respondentSumType.getRespondentName()
+                + " is updated.");
        } else { // update is inserting a new entry
             if(!isDuplicateRespondent(caseData, respondentSumType)) {
 
