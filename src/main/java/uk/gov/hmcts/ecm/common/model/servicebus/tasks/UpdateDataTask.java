@@ -233,7 +233,6 @@ public class UpdateDataTask extends DataTaskParent {
                 .collect(Collectors.toList());
             RespondentSumTypeItem respondentToUpdate = duplicateRespondents.get(0);
             respondentToUpdate.setValue(respondentSumType);
-            sortModifiedRespondentCollection(caseData);
             log.info("Case: " + caseData.getEthosCaseReference() + ". "
                 + "Respondent batch update: existing respondent is updated.");
        } else { // update is inserting a new entry
@@ -251,8 +250,8 @@ public class UpdateDataTask extends DataTaskParent {
                     + "Respondent batch update: new respondent is added.");
                 caseData.getRespondentCollection().add(createRespondentSumTypeItem(respondentSumType));
             }
-            sortModifiedRespondentCollection(caseData);
         }
+        sortModifiedRespondentCollection(caseData);
     }
 
     private void sortModifiedRespondentCollection(CaseData caseData) {
