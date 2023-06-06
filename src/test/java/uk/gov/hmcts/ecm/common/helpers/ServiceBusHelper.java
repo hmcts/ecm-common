@@ -47,6 +47,11 @@ public class ServiceBusHelper {
         JurCodesTypeItem jurCodesTypeItem = new JurCodesTypeItem();
         jurCodesTypeItem.setValue(jurCodesType);
         List<JurCodesTypeItem> jurCodesCollection = new ArrayList<>(Collections.singletonList(jurCodesTypeItem));
+        RespondentSumTypeItem respondentItem = new RespondentSumTypeItem();
+        RespondentSumType respondentSumType = new RespondentSumType();
+        respondentSumType.setRespondentName("RespondentName");
+        respondentItem.setValue(respondentSumType);
+        caseData.setRespondentCollection(List.of(respondentItem));
         caseData.setJurCodesCollection(jurCodesCollection);
         submitEvent.setCaseData(caseData);
         return submitEvent;

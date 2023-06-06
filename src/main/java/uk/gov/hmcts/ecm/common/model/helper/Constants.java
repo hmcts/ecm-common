@@ -415,6 +415,7 @@ public class Constants {
     public static final String BATCH_UPDATE_TYPE_1 = "batchUpdateType1";
     public static final String BATCH_UPDATE_TYPE_2 = "batchUpdateType2";
     public static final String BATCH_UPDATE_TYPE_3 = "batchUpdateType3";
+    public static final String RESPONDENT_BATCH_UPDATE_CASE = "Respondent batch update - Case:";
 
     public static final String MULTIPLE_NAME_AMENDMENT = "Amend multiple name";
     public static final String LEAD_CASE_AMENDMENT = "Amend lead case";
