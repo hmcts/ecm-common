@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'uk.gov.hmcts.reform'
-version '2.0.1'
+version '2.0.2'
 
 java {
     toolchain {
@@ -85,10 +85,7 @@ ext {
 dependencies {
     api group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
     api group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.6'
-    api group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
-    api('org.apache.xmlgraphics:batik-all:1.14') {
-        because 'CVE-2020-11987, CVE-2020-11988. Can be removed when we upgrade poi-ooxml. See https://bz.apache.org/bugzilla/show_bug.cgi?id=65166'
-    }
+    api group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.3'
     api group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.3'
 
     implementation group: 'com.github.hmcts', name: 'ecm-data-model', version: '1.0.1'
