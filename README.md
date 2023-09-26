@@ -7,7 +7,7 @@ Re-usable features for all ECM Java Projects
 
 ### Prerequisites
 
-- [JDK 8](https://www.oracle.com/java)
+- [JDK 17](https://www.oracle.com/java)
 
 ## Usage
 
