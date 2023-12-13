@@ -86,7 +86,7 @@ dependencies {
     api group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
     api group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.7'
     api group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.5'
-    api group: 'org.elasticsearch', name: 'elasticsearch', version: '8.11.2'
+    api group: 'org.elasticsearch', name: 'elasticsearch', version: '8.11.3'
 
     implementation group: 'com.github.hmcts', name: 'ecm-data-model', version: '1.1.7'
     implementation group: 'com.github.hmcts', name: 'et-data-model', version: '4.0.0'
