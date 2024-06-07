@@ -8,6 +8,7 @@ public class Constants {
     private Constants() {
     }
 
+
     public static final DateTimeFormatter OLD_DATE_TIME_PATTERN =
         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
     public static final DateTimeFormatter OLD_DATE_TIME_PATTERN2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -16,6 +17,8 @@ public class Constants {
     public static final DateTimeFormatter NEW_TIME_PATTERN = DateTimeFormatter.ofPattern("HH:mm");
     public static final DateTimeFormatter DATE_TIME_USER_FRIENDLY_PATTERN =
         DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    public static final String ET_ENGLAND_AND_WALES = "ET_EnglandWales";
+    public static final String ET_SCOTLAND = "ET_Scotland";
     public static final String NEW_LINE = "\",\n";
     public static final String OUTPUT_FILE_NAME = "document.docx";
     public static final String DEFAULT_FLAGS_IMAGE_FILE_NAME = "EMP-TRIB-0000000.jpg";

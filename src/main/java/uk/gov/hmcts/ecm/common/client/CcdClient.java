@@ -53,6 +53,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.ALL_VENUES;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.ET_ENGLAND_AND_WALES;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.ET_SCOTLAND;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.MANUALLY_CREATED_POSITION;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.OLD_DATE_TIME_PATTERN;
 
@@ -169,13 +171,39 @@ public class CcdClient {
         return restTemplate.exchange(uri, HttpMethod.GET, request, SubmitEvent.class).getBody();
     }
 
-    public List<CaseEventDetail> retrieveCaseEventDetails(String authToken, String caseTypeId, String jurisdiction, String cid)
+    public List<CaseEventDetail> retrieveCaseEventDetails(String authToken, String caseTypeId,
+                                                          String jurisdiction, String cid)
             throws IOException {
-        HttpEntity<CCDRequest> request =
-                new HttpEntity<>(buildHeaders(authToken));
-        String uri = ccdClientConfig.buildRetrieveCaseEventDetailsUrl(userService.getUserDetails(authToken).getUid(), jurisdiction,
-                caseTypeId, cid);
-        return restTemplate.exchange(uri, HttpMethod.GET, request, new ParameterizedTypeReference<List<CaseEventDetail>>(){}).getBody();
+        HttpEntity<CCDRequest> request = new HttpEntity<>(buildHeaders(authToken));
+        String uri = ccdClientConfig.buildRetrieveCaseEventDetailsUrl(userService.getUserDetails(authToken).getUid(),
+                jurisdiction, caseTypeId, cid);
+        return restTemplate.exchange(uri, HttpMethod.GET, request,
+                new ParameterizedTypeReference<List<CaseEventDetail>>(){}).getBody();
+    }
+
+    public String retrieveTransferredCaseReference(String authToken, String caseTypeId,
+                                                   String jurisdiction, String cid)
+            throws IOException {
+        HttpEntity<CCDRequest> request = new HttpEntity<>(buildHeaders(authToken));
+        String uri = ccdClientConfig.buildRetrieveCaseUrl(userService.getUserDetails(authToken).getUid(),
+                jurisdiction, caseTypeId, cid);
+
+        String targetCaseEthosReference = null;
+        if (ET_ENGLAND_AND_WALES.equals(caseTypeId) || ET_SCOTLAND.equals(caseTypeId)) {
+
+            uk.gov.hmcts.et.common.model.ccd.SubmitEvent reformCase = restTemplate.exchange(uri, HttpMethod.GET,
+                            request, uk.gov.hmcts.et.common.model.ccd.SubmitEvent.class).getBody();
+            if (reformCase != null && reformCase.getCaseData() != null) {
+                targetCaseEthosReference = reformCase.getCaseData().getEthosCaseReference();
+            }
+        } else {
+            uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent ecmCase = restTemplate.exchange(uri, HttpMethod.GET,
+                            request, uk.gov.hmcts.ecm.common.model.ccd.SubmitEvent.class).getBody();
+            if (ecmCase != null && ecmCase.getCaseData() != null) {
+                targetCaseEthosReference = ecmCase.getCaseData().getEthosCaseReference();
+            }
+        }
+        return targetCaseEthosReference;
     }
 
     public List<SubmitEvent> executeElasticSearch(String authToken, String caseTypeId, String query)
