@@ -145,7 +145,7 @@ public class ESHelper {
     }
 
     private static String getDateFieldName(String reportType) {
-        log.info("REPORT TYPE: " + reportType);
+        log.info("REPORT TYPE:  {}.", reportType);
         switch (reportType) {
             case BROUGHT_FORWARD_REPORT:
                 return BROUGHT_FORWARD_DATE_FIELD_NAME;

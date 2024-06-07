@@ -53,8 +53,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.ALL_VENUES;
-import static uk.gov.hmcts.ecm.common.model.helper.Constants.EW_ENGLAND_AND_WALES;
-import static uk.gov.hmcts.ecm.common.model.helper.Constants.EW_SCOTLAND;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.ET_ENGLAND_AND_WALES;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.ET_SCOTLAND;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.MANUALLY_CREATED_POSITION;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.OLD_DATE_TIME_PATTERN;
 
@@ -189,7 +189,7 @@ public class CcdClient {
                 jurisdiction, caseTypeId, cid);
 
         String targetCaseEthosReference = null;
-        if (EW_ENGLAND_AND_WALES.equals(caseTypeId) || EW_SCOTLAND.equals(caseTypeId)) {
+        if (ET_ENGLAND_AND_WALES.equals(caseTypeId) || ET_SCOTLAND.equals(caseTypeId)) {
 
             uk.gov.hmcts.et.common.model.ccd.SubmitEvent reformCase = restTemplate.exchange(uri, HttpMethod.GET,
                             request, uk.gov.hmcts.et.common.model.ccd.SubmitEvent.class).getBody();
