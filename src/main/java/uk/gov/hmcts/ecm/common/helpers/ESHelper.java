@@ -38,6 +38,7 @@ public class ESHelper {
     public static final String MEMBER_DAYS_DATE_FIELD_NAME =
         "data.hearingCollection.value.hearingDateCollection.value.listedDate";
     private static final String REPORT_TYPE_NOT_FOUND = "Report type not found";
+    private static final String END_QUERY = "\n}";
 
     private ESHelper() {
         // All access through static methods
@@ -88,7 +89,7 @@ public class ESHelper {
                 MAX_ES_SIZE / 2, ETHOS_CASE_REFERENCE_KEYWORD, cases);
     }
 
-    public static String getTransferredCaseSearchQueryLabel(String caseId) {
+    public static String getTransferredCaseSearchQuery(String caseId) {
         //get source case using current case id - partial match with transferredCaseLink
         return String.format("{\"size\":%s,"
                         + "\"query\":{"
@@ -107,6 +108,39 @@ public class ESHelper {
                         + "\"terminate_after\":1"
                         + "}",
                 MAX_ES_SIZE / 2, "\"" + caseId + "\"");
+    }
+
+    public static String getCasesWithDuplicateEthosRefSearchQuery(String ethosCaseReference) {
+        //get cases that have duplicate ethosCaseReference that matches the current case ethosCaseReference
+        String formattedQuery = """
+            {
+              "size": %s,
+              "query": {
+                "bool": {
+                  "must": [{
+                    "terms": {
+                      "state.keyword": [
+                        "Transferred", "Accepted", "Rejected", "Submitted", "Closed", "Vetted"
+                      ]
+                    },
+                    "term": {
+                      "data.ethosCaseReference": { "value": %s }
+                    }
+                  }]
+                }
+              },
+              "_source": [
+                "reference"
+              ],
+              "sort": [
+                {
+                  "reference.keyword": "asc"
+                }
+              ]
+            }
+        """;
+
+        return String.format(formattedQuery, MAX_ES_SIZE / 2, ethosCaseReference);
     }
 
     public static String getBulkSearchQuery(String multipleReference) {

@@ -190,7 +190,6 @@ public class CcdClient {
 
         String targetCaseEthosReference = null;
         if (ET_ENGLAND_AND_WALES.equals(caseTypeId) || ET_SCOTLAND.equals(caseTypeId)) {
-
             uk.gov.hmcts.et.common.model.ccd.SubmitEvent reformCase = restTemplate.exchange(uri, HttpMethod.GET,
                             request, uk.gov.hmcts.et.common.model.ccd.SubmitEvent.class).getBody();
             if (reformCase != null && reformCase.getCaseData() != null) {
@@ -557,7 +556,14 @@ public class CcdClient {
 
     public List<SubmitEvent> retrieveTransferredCaseElasticSearch(String authToken, String caseTypeId,
                                                                     String currentCaseId) throws IOException {
-        String query = ESHelper.getTransferredCaseSearchQueryLabel(currentCaseId);
+        String query = ESHelper.getTransferredCaseSearchQuery(currentCaseId);
+        log.info("QUERY Labels: " + query);
+        return buildAndGetElasticSearchRequest(authToken, caseTypeId, query);
+    }
+
+    public List<SubmitEvent> retrieveCasesWithDuplicateEthosRefElasticSearch(String authToken, String caseTypeId,
+                                                                  String currentCaseEthosRef) throws IOException {
+        String query = ESHelper.getCasesWithDuplicateEthosRefSearchQuery(currentCaseEthosRef);
         log.info("QUERY Labels: " + query);
         return buildAndGetElasticSearchRequest(authToken, caseTypeId, query);
     }
