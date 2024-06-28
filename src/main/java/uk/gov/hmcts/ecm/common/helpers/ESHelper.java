@@ -38,7 +38,7 @@ public class ESHelper {
     public static final String MEMBER_DAYS_DATE_FIELD_NAME =
         "data.hearingCollection.value.hearingDateCollection.value.listedDate";
     private static final String REPORT_TYPE_NOT_FOUND = "Report type not found";
- 
+
     private ESHelper() {
         // All access through static methods
     }
@@ -116,16 +116,20 @@ public class ESHelper {
               "size": %s,
               "query": {
                 "bool": {
-                  "must": [{
-                    "terms": {
-                      "state.keyword": [
-                        "Transferred", "Accepted", "Rejected", "Submitted", "Closed", "Vetted"
-                      ]
+                  "must": [
+                    {
+                      "terms": {
+                        "state.keyword": [
+                          "Transferred", "Accepted", "Rejected", "Submitted", "Closed", "Vetted"
+                        ]
+                      }
                     },
-                    "term": {
-                      "data.ethosCaseReference": { "value": %s }
+                    {
+                      "term": {
+                        "data.ethosCaseReference": { "value": %s }
+                      }
                     }
-                  }]
+                  ]
                 }
               },
               "_source": [
