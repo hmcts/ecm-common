@@ -112,35 +112,39 @@ public class ESHelper {
     public static String getCasesWithDuplicateEthosRefSearchQuery(String ethosCaseReference) {
         //get cases that have duplicate ethosCaseReference that matches the current case ethosCaseReference
         String formattedQuery = """
-            {
-              "size": %s,
-              "query": {
-                "bool": {
-                  "must": [
-                    {
-                      "terms": {
-                        "state.keyword": [
-                          "Transferred", "Accepted", "Rejected", "Submitted", "Closed", "Vetted"
-                        ]
-                      }
-                    },
-                    {
-                      "term": {
-                        "data.ethosCaseReference": { "value": %s }
-                      }
-                    }
-                  ]
-                }
-              },
-              "_source": [
-                "reference"
-              ],
-              "sort": [
+        {
+          "size": %s,
+          "query": {
+            "bool": {
+              "must": [
                 {
-                  "reference.keyword": "asc"
+                  "terms": {
+                    "state.keyword": [
+                      "Transferred", "Accepted", "Rejected", "Submitted", "Closed", "Vetted"
+                    ]
+                  }
+                },
+                {
+                  "term": {
+                    "data.ethosCaseReference": {
+                      "value": "%s"
+                    }
+                  }
                 }
               ]
             }
+          },
+          "_source": [
+            "reference"
+          ],
+          "sort": [
+            {
+              "reference.keyword": {
+                "order": "asc"
+              }
+            }
+          ]
+        }
         """;
 
         return String.format(formattedQuery, MAX_ES_SIZE / 2, ethosCaseReference);
