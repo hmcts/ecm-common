@@ -112,7 +112,7 @@ dependencies {
     testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.5.0'
 
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
-    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
 
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
