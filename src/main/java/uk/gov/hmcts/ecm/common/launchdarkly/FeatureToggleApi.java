@@ -41,7 +41,7 @@ public class FeatureToggleApi {
     }
 
     public LDUser.Builder createLDUser() {
-        return new LDUser.Builder("et-cos")
+        return new LDUser.Builder("ethos")
                 .custom("timestamp", String.valueOf(System.currentTimeMillis()))
                 .custom("environment", environment);
     }
