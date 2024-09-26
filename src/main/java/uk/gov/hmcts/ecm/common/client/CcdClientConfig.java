@@ -137,4 +137,8 @@ public class CcdClientConfig {
         return String.format(PAGINATION_METADATA_FORMAT, ccdDataStoreApiBaseUrl, uid, jid, ctid);
     }
 
+    String buildStartEventUrlForCaseWorker(String uid, String jid, String ctid, String cid, String eventId) {
+        return String.format(START_EVENT_FOR_CASE_URL_CASEWORKER_FORMAT, ccdDataStoreApiBaseUrl, uid, jid, ctid, cid,
+                eventId);
+    }
 }

@@ -403,7 +403,7 @@ public class CcdClient {
         return ESHelper.getReportRangeDateSearchQuery(from, to, reportType);
     }
 
-    private List<SubmitEvent> buildAndGetElasticSearchRequest(String authToken, String caseTypeId, String query)
+    public List<SubmitEvent> buildAndGetElasticSearchRequest(String authToken, String caseTypeId, String query)
             throws IOException {
         List<SubmitEvent> submitEvents = new ArrayList<>();
         HttpEntity<String> request = new HttpEntity<>(query, buildHeaders(authToken));
@@ -629,6 +629,14 @@ public class CcdClient {
         String uri = ccdClientConfig.buildStartEventForCaseUrl(userService.getUserDetails(authToken).getUid(),
                 jurisdiction,
                 caseTypeId, cid);
+        return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
+    }
+
+    public CCDRequest startEventForCase(
+            String authToken, String caseTypeId, String jurisdiction, String cid, String eventId) throws IOException {
+        HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
+        String uri = ccdClientConfig.buildStartEventUrlForCaseWorker(userService.getUserDetails(authToken).getUid(),
+                jurisdiction, caseTypeId, cid, eventId);
         return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
     }
 
