@@ -100,7 +100,7 @@ dependencies {
 
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.8'
     implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.5.8'
-    implementation group: 'ch.qos.logback', name: 'logback-access', version: '1.5.8'
+    implementation group: 'ch.qos.logback', name: 'logback-access', version: '1.5.9'
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
