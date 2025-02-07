@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.ecm.common.helpers.ESHelper;
 import uk.gov.hmcts.ecm.common.model.bulk.BulkCaseSearchResult;
@@ -101,6 +102,31 @@ public class CcdClient {
                 caseDetails.getCaseTypeId());
         return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
     }
+
+    public uk.gov.hmcts.et.common.model.ccd.CCDRequest startCaseMigrationToReform(String authToken, String jurisdiction,
+                                                                                  String caseTypeId) throws IOException {
+        HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
+        String uri = ccdClientConfig.buildStartCaseMigrationToReformUrl(userService.getUserDetails(authToken).getUid(),
+                jurisdiction, caseTypeId);
+        ResponseEntity<uk.gov.hmcts.et.common.model.ccd.CCDRequest> responseEntity =
+                restTemplate.exchange(uri, HttpMethod.GET, request, uk.gov.hmcts.et.common.model.ccd.CCDRequest.class);
+        return responseEntity.getBody();
+    }
+
+    public uk.gov.hmcts.et.common.model.ccd.SubmitEvent submitCaseCaseReform(String authToken,
+                                                                             uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails,
+                                                                             uk.gov.hmcts.et.common.model.ccd.CCDRequest req)
+        throws IOException {
+
+        HttpEntity<uk.gov.hmcts.et.common.model.ccd.CaseDataContent> request =
+            new HttpEntity<>(caseDataBuilder.buildCaseDataContent(caseDetails.getCaseData(), req,
+                CREATION_EVENT_SUMMARY), buildHeaders(authToken));
+        String uri = ccdClientConfig.buildSubmitCaseCreationUrl(userService.getUserDetails(authToken).getUid(),
+                caseDetails.getJurisdiction(), caseDetails.getCaseTypeId());
+        return restTemplate.exchange(uri, HttpMethod.POST, request, uk.gov.hmcts.et.common.model.ccd.SubmitEvent.class)
+            .getBody();
+    }
+
 
     public CCDRequest startCaseCreationTransfer(String authToken,
                                                 uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails)

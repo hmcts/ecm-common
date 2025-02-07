@@ -50,4 +50,18 @@ public class CaseDataBuilder {
                 .ignoreWarning(IGNORE_WARNING)
                 .build();
     }
+
+    public uk.gov.hmcts.et.common.model.ccd.CaseDataContent buildCaseDataContent(
+            uk.gov.hmcts.et.common.model.ccd.CaseData caseData,
+            uk.gov.hmcts.et.common.model.ccd.CCDRequest req, String creationEventSummary) {
+        return uk.gov.hmcts.et.common.model.ccd.CaseDataContent.builder()
+            .event(uk.gov.hmcts.et.common.model.ccd.Event.builder()
+                    .eventId(req.getEventId())
+                    .summary(creationEventSummary)
+                    .build())
+            .data(objectMapper.convertValue(caseData, new TypeReference<>() {}))
+            .token(req.getToken())
+            .ignoreWarning(IGNORE_WARNING)
+            .build();
+    }
 }
