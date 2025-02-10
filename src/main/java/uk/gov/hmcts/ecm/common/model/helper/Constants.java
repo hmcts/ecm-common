@@ -192,6 +192,7 @@ public class Constants {
     public static final String CASE_TRANSFER_EVENT_TRIGGER_ID = "caseTransferMultiple";
     public static final String RETURN_TRANSFER_EVENT_TRIGGER_ID = "returnCaseTransfer";
     public static final String CREATE_MULTIPLE_EVENT_TRIGGER_ID = "createMultiple";
+    public static final String MIGRATE_CASE_TO_REFORM_TRIGGER_ID = "createEcmCase";
 
     public static final String GLASGOW_OFFICE = "Glasgow";
     public static final String ABERDEEN_OFFICE = "Aberdeen";
