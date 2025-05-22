@@ -2,7 +2,7 @@ package uk.gov.hmcts.ecm.common.helpers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -12,13 +12,10 @@ import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static uk.gov.hmcts.ecm.common.model.helper.Constants.ALL_VENUES;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.BROUGHT_FORWARD_REPORT;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.CASES_COMPLETED_REPORT;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.CASE_SOURCE_LOCAL_REPORT;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.CLAIMS_ACCEPTED_REPORT;
-import static uk.gov.hmcts.ecm.common.model.helper.Constants.ET_ENGLAND_AND_WALES;
-import static uk.gov.hmcts.ecm.common.model.helper.Constants.ET_SCOTLAND;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.HEARINGS_BY_HEARING_TYPE_REPORT;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.LIVE_CASELOAD_REPORT;
 import static uk.gov.hmcts.ecm.common.model.helper.Constants.MAX_ES_SIZE;
@@ -51,10 +48,10 @@ public class ESHelper {
         "data.hearingCollection.value.hearingDateCollection.value.listedDate";
     private static final String REPORT_TYPE_NOT_FOUND = "Report type not found";
     private static final String ELASTICSEARCH_FIELD_MANAGING_OFFICE_KEYWORD = "data.managingOffice.keyword";
-    private static final String ELASTICSEARCH_FIELD_HEARING_VENUE_DAY_SCOTLAND =
-            "data.hearingCollection.value.hearingDateCollection.value.hearingVenueDayScotland";
-    private static final String ELASTICSEARCH_FIELD_HEARING_LOCATION =
+    private static final String ELASTICSEARCH_FIELD_HEARING_MANAGING_OFFICE =
             "data.hearingCollection.value.hearingDateCollection.value.Hearing_";
+    private static final String ELASTICSEARCH_FIELD_HEARING_VENUE_DAY =
+            "data.hearingCollection.value.hearingDateCollection.value.hearingVenueDay";
 
     private ESHelper() {
         // All access through static methods
@@ -175,30 +172,10 @@ public class ESHelper {
     }
 
     public static String getListingVenueAndRangeDateSearchQuery(String dateToSearchFrom, String dateToSearchTo,
-                                                                String venueToSearchMapping, String venue,
-                                                                String managingOffice, String caseTypeId) {
+                                                                String venueToSearchMapping, String venue) {
         BoolQueryBuilder boolQueryBuilder = boolQuery()
+                .filter(QueryBuilders.termQuery(venueToSearchMapping, venue))
                 .filter(new RangeQueryBuilder(LISTING_DATE_FIELD_NAME).gte(dateToSearchFrom).lte(dateToSearchTo));
-
-        if (!ALL_VENUES.equals(managingOffice)) {
-            if (ET_ENGLAND_AND_WALES.equals(caseTypeId)) {
-                boolQueryBuilder.filter(new TermsQueryBuilder(
-                        ELASTICSEARCH_FIELD_MANAGING_OFFICE_KEYWORD, managingOffice));
-            } else if (ET_SCOTLAND.equals(caseTypeId)) {
-                boolQueryBuilder.must(new MatchQueryBuilder(
-                        ELASTICSEARCH_FIELD_HEARING_VENUE_DAY_SCOTLAND, managingOffice));
-            }
-        }
-
-        if (!managingOffice.equals(venue)) {
-            if (ET_ENGLAND_AND_WALES.equals(caseTypeId)) {
-                boolQueryBuilder.must(new MatchQueryBuilder(venueToSearchMapping, venue));
-            } else if (ET_SCOTLAND.equals(caseTypeId)) {
-                String scotlandField = ELASTICSEARCH_FIELD_HEARING_LOCATION + managingOffice + ".value.code";
-                boolQueryBuilder.must(new MatchQueryBuilder(scotlandField, venue));
-            }
-        }
-
         return new SearchSourceBuilder()
                 .size(MAX_ES_SIZE)
                 .query(boolQueryBuilder).toString();

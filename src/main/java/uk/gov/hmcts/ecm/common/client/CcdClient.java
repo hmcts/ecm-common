@@ -389,24 +389,20 @@ public class CcdClient {
         return referenceSubmitEvents;
     }
 
-    private String getListingQuery(String from, String to, String venueToSearchMapping,
-                                   String venue, String managingOffice, String caseTypeId) {
+    private String getListingQuery(String from, String to, String venueToSearchMapping, String venue) {
         if (ALL_VENUES.equals(venue)) {
             return ESHelper.getListingRangeDateSearchQuery(from, to);
         } else {
-            return ESHelper.getListingVenueAndRangeDateSearchQuery(from, to, venueToSearchMapping,
-                    venue, managingOffice, caseTypeId);
+            return ESHelper.getListingVenueAndRangeDateSearchQuery(from, to, venueToSearchMapping, venue);
         }
     }
 
     public List<SubmitEvent> retrieveCasesVenueAndDateElasticSearch(String authToken, String caseTypeId,
                                                                     String dateToSearchFrom, String dateToSearchTo,
-                                                                    String venueToSearchMapping, String venueToSearch,
-                                                                    String managingOffice)
+                                                                    String venueToSearchMapping, String venueToSearch)
             throws IOException {
         return buildAndGetElasticSearchRequest(authToken, caseTypeId,
-                getListingQuery(dateToSearchFrom, dateToSearchTo, venueToSearchMapping, venueToSearch,
-                        managingOffice, caseTypeId));
+                getListingQuery(dateToSearchFrom, dateToSearchTo, venueToSearchMapping, venueToSearch));
     }
 
     public List<SubmitEvent> retrieveCasesGenericReportElasticSearch(String authToken, String caseTypeId,

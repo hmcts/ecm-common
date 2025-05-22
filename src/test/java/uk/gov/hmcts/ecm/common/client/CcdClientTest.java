@@ -399,7 +399,7 @@ public class CcdClientTest {
                 eq(CaseSearchResult.class))).thenReturn(responseEntity);
         ccdClient.retrieveCasesVenueAndDateElasticSearch("authToken",
                 caseDetails.getCaseTypeId(), "2019-09-23",
-                "2019-09-24", "Manchester", "Manchester", LISTING_VENUE_FIELD_NAME);
+                "2019-09-24", "Manchester", LISTING_VENUE_FIELD_NAME);
         verify(restTemplate).exchange(eq(uri), eq(HttpMethod.POST), eq(httpEntity), eq(CaseSearchResult.class));
         verifyNoMoreInteractions(restTemplate);
     }
@@ -422,7 +422,7 @@ public class CcdClientTest {
                 eq(CaseSearchResult.class))).thenReturn(responseEntity);
         ccdClient.retrieveCasesVenueAndDateElasticSearch("authToken",
                 caseDetails.getCaseTypeId(), "2019-09-23",
-                "2019-09-24", "Manchester", "Manchester",  LISTING_VENUE_FIELD_NAME);
+                "2019-09-24",  "Manchester",  LISTING_VENUE_FIELD_NAME);
         verify(restTemplate).exchange(eq(uri), eq(HttpMethod.POST), eq(httpEntity), eq(CaseSearchResult.class));
         verifyNoMoreInteractions(restTemplate);
     }
@@ -442,7 +442,7 @@ public class CcdClientTest {
                 eq(CaseSearchResult.class))).thenReturn(responseEntity);
         ccdClient.retrieveCasesVenueAndDateElasticSearch("authToken",
                 caseDetails.getCaseTypeId(), "2019-09-23",
-                "2019-09-23", ALL_VENUES, "Manchester",  ALL_VENUES);
+                "2019-09-23", "Manchester",  ALL_VENUES);
         verify(restTemplate).exchange(eq(uri), eq(HttpMethod.POST), eq(httpEntity), eq(CaseSearchResult.class));
         verifyNoMoreInteractions(restTemplate);
     }

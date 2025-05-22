@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'uk.gov.hmcts.reform'
-version '2.1.5'
+version '2.1.6'
 
 java {
     toolchain {
@@ -35,7 +35,7 @@ jacocoTestReport {
 // endregion
 
 checkstyle {
-    maxWarnings = 86
+    maxWarnings = 78
     toolVersion = '10.21.0'
 }
 
