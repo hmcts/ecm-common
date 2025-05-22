@@ -1,7 +1,10 @@
 package uk.gov.hmcts.ecm.common.helpers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.util.List;
@@ -9,7 +12,19 @@ import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static uk.gov.hmcts.ecm.common.model.helper.Constants.*;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.ALL_VENUES;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.BROUGHT_FORWARD_REPORT;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.CASES_COMPLETED_REPORT;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.CASE_SOURCE_LOCAL_REPORT;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.CLAIMS_ACCEPTED_REPORT;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.ET_ENGLAND_AND_WALES;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.ET_SCOTLAND;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.HEARINGS_BY_HEARING_TYPE_REPORT;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.LIVE_CASELOAD_REPORT;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.MAX_ES_SIZE;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.MEMBER_DAYS_REPORT;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.SERVING_CLAIMS_REPORT;
+import static uk.gov.hmcts.ecm.common.model.helper.Constants.TIME_TO_FIRST_HEARING_REPORT;
 
 @Slf4j
 public class ESHelper {
@@ -35,6 +50,7 @@ public class ESHelper {
     public static final String MEMBER_DAYS_DATE_FIELD_NAME =
         "data.hearingCollection.value.hearingDateCollection.value.listedDate";
     private static final String REPORT_TYPE_NOT_FOUND = "Report type not found";
+    private static final String ELASTICSEARCH_FIELD_MANAGING_OFFICE_KEYWORD = "data.managingOffice.keyword";
     private static final String ELASTICSEARCH_FIELD_HEARING_VENUE_DAY_SCOTLAND =
             "data.hearingCollection.value.hearingDateCollection.value.hearingVenueDayScotland";
     private static final String ELASTICSEARCH_FIELD_HEARING_LOCATION =
@@ -113,40 +129,40 @@ public class ESHelper {
     public static String getCasesWithDuplicateEthosRefSearchQuery(String ethosCaseReference) {
         //get cases that have duplicate ethosCaseReference that matches the current case ethosCaseReference
         String formattedQuery = """
-        {
-          "size": %s,
-          "query": {
-            "bool": {
-              "must": [
-                {
-                  "terms": {
-                    "state.keyword": [
-                      "Transferred", "Accepted", "Rejected", "Submitted", "Closed", "Vetted"
-                    ]
-                  }
-                },
-                {
-                  "term": {
-                    "data.ethosCaseReference": {
-                      "value": "%s"
+            {
+              "size": %s,
+              "query": {
+                "bool": {
+                  "must": [
+                    {
+                      "terms": {
+                        "state.keyword": [
+                          "Transferred", "Accepted", "Rejected", "Submitted", "Closed", "Vetted"
+                        ]
+                      }
+                    },
+                    {
+                      "term": {
+                        "data.ethosCaseReference": {
+                          "value": "%s"
+                        }
+                      }
                     }
+                  ]
+                }
+              },
+              "_source": [
+                "reference"
+              ],
+              "sort": [
+                {
+                  "reference.keyword": {
+                    "order": "asc"
                   }
                 }
               ]
             }
-          },
-          "_source": [
-            "reference"
-          ],
-          "sort": [
-            {
-              "reference.keyword": {
-                "order": "asc"
-              }
-            }
-          ]
-        }
-        """;
+            """;
 
         return String.format(formattedQuery, MAX_ES_SIZE / 2, ethosCaseReference);
     }
@@ -159,19 +175,28 @@ public class ESHelper {
     }
 
     public static String getListingVenueAndRangeDateSearchQuery(String dateToSearchFrom, String dateToSearchTo,
-                                                                String venueToSearch, String managingOffice) {
+                                                                String venueToSearchMapping, String venue,
+                                                                String managingOffice, String caseTypeId) {
         BoolQueryBuilder boolQueryBuilder = boolQuery()
                 .filter(new RangeQueryBuilder(LISTING_DATE_FIELD_NAME).gte(dateToSearchFrom).lte(dateToSearchTo));
 
         if (!ALL_VENUES.equals(managingOffice)) {
-            boolQueryBuilder.must(
-                    new MatchQueryBuilder(ELASTICSEARCH_FIELD_HEARING_VENUE_DAY_SCOTLAND, managingOffice));
+            if (ET_ENGLAND_AND_WALES.equals(caseTypeId)) {
+                boolQueryBuilder.filter(new TermsQueryBuilder(
+                        ELASTICSEARCH_FIELD_MANAGING_OFFICE_KEYWORD, managingOffice));
+            } else if (ET_SCOTLAND.equals(caseTypeId)) {
+                boolQueryBuilder.must(new MatchQueryBuilder(
+                        ELASTICSEARCH_FIELD_HEARING_VENUE_DAY_SCOTLAND, managingOffice));
+            }
         }
 
-        if (!managingOffice.equals(venueToSearch)) {
-            boolQueryBuilder.must(
-                    new MatchQueryBuilder(ELASTICSEARCH_FIELD_HEARING_LOCATION
-                            + managingOffice + ".value.code", venueToSearch));
+        if (!managingOffice.equals(venue)) {
+            if (ET_ENGLAND_AND_WALES.equals(caseTypeId)) {
+                boolQueryBuilder.must(new MatchQueryBuilder(venueToSearchMapping, venue));
+            } else if (ET_SCOTLAND.equals(caseTypeId)) {
+                String scotlandField = ELASTICSEARCH_FIELD_HEARING_LOCATION + managingOffice + ".value.code";
+                boolQueryBuilder.must(new MatchQueryBuilder(scotlandField, venue));
+            }
         }
 
         return new SearchSourceBuilder()

@@ -103,8 +103,19 @@ public class CcdClient {
         return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
     }
 
+    public CCDRequest startCaseCreationTransfer(String authToken,
+                                                uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails)
+            throws IOException {
+        HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
+        String uri = ccdClientConfig.buildStartCaseCreationTransferUrl(userService.getUserDetails(authToken).getUid(),
+                caseDetails.getJurisdiction(),
+                caseDetails.getCaseTypeId());
+        return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
+    }
+
     public uk.gov.hmcts.et.common.model.ccd.CCDRequest startCaseMigrationToReform(String authToken, String jurisdiction,
-                                                                                  String caseTypeId) throws IOException {
+                                                                                  String caseTypeId)
+            throws IOException {
         HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
         String uri = ccdClientConfig.buildStartCaseMigrationToReformUrl(userService.getUserDetails(authToken).getUid(),
                 jurisdiction, caseTypeId);
@@ -114,8 +125,8 @@ public class CcdClient {
     }
 
     public uk.gov.hmcts.et.common.model.ccd.SubmitEvent submitCaseCaseReform(String authToken,
-                                                                             uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails,
-                                                                             uk.gov.hmcts.et.common.model.ccd.CCDRequest req)
+                                                             uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails,
+                                                             uk.gov.hmcts.et.common.model.ccd.CCDRequest req)
         throws IOException {
 
         HttpEntity<uk.gov.hmcts.et.common.model.ccd.CaseDataContent> request =
@@ -125,17 +136,6 @@ public class CcdClient {
                 caseDetails.getJurisdiction(), caseDetails.getCaseTypeId());
         return restTemplate.exchange(uri, HttpMethod.POST, request, uk.gov.hmcts.et.common.model.ccd.SubmitEvent.class)
             .getBody();
-    }
-
-
-    public CCDRequest startCaseCreationTransfer(String authToken,
-                                                uk.gov.hmcts.et.common.model.ccd.CaseDetails caseDetails)
-        throws IOException {
-        HttpEntity<String> request = new HttpEntity<>(buildHeaders(authToken));
-        String uri = ccdClientConfig.buildStartCaseCreationTransferUrl(userService.getUserDetails(authToken).getUid(),
-            caseDetails.getJurisdiction(),
-            caseDetails.getCaseTypeId());
-        return restTemplate.exchange(uri, HttpMethod.GET, request, CCDRequest.class).getBody();
     }
 
     public CCDRequest startCaseTransfer(String authToken, String caseTypeId, String jurisdiction, String cid)
@@ -389,20 +389,24 @@ public class CcdClient {
         return referenceSubmitEvents;
     }
 
-    private String getListingQuery(String from, String to, String venue, String managingOffice) {
+    private String getListingQuery(String from, String to, String venueToSearchMapping,
+                                   String venue, String managingOffice, String caseTypeId) {
         if (ALL_VENUES.equals(venue)) {
             return ESHelper.getListingRangeDateSearchQuery(from, to);
         } else {
-            return ESHelper.getListingVenueAndRangeDateSearchQuery(from, to, venue, managingOffice);
+            return ESHelper.getListingVenueAndRangeDateSearchQuery(from, to, venueToSearchMapping,
+                    venue, managingOffice, caseTypeId);
         }
     }
 
     public List<SubmitEvent> retrieveCasesVenueAndDateElasticSearch(String authToken, String caseTypeId,
                                                                     String dateToSearchFrom, String dateToSearchTo,
-                                                                 String venueToSearch, String managingOffice)
+                                                                    String venueToSearchMapping, String venueToSearch,
+                                                                    String managingOffice)
             throws IOException {
         return buildAndGetElasticSearchRequest(authToken, caseTypeId,
-                getListingQuery(dateToSearchFrom, dateToSearchTo, venueToSearch, managingOffice));
+                getListingQuery(dateToSearchFrom, dateToSearchTo, venueToSearchMapping, venueToSearch,
+                        managingOffice, caseTypeId));
     }
 
     public List<SubmitEvent> retrieveCasesGenericReportElasticSearch(String authToken, String caseTypeId,
