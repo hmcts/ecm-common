@@ -1,7 +1,10 @@
 package uk.gov.hmcts.ecm.common.helpers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.util.List;
@@ -35,10 +38,6 @@ public class ESHelper {
     public static final String MEMBER_DAYS_DATE_FIELD_NAME =
         "data.hearingCollection.value.hearingDateCollection.value.listedDate";
     private static final String REPORT_TYPE_NOT_FOUND = "Report type not found";
-    private static final String ELASTICSEARCH_FIELD_HEARING_VENUE_DAY_SCOTLAND =
-            "data.hearingCollection.value.hearingDateCollection.value.hearingVenueDayScotland";
-    private static final String ELASTICSEARCH_FIELD_HEARING_LOCATION =
-            "data.hearingCollection.value.hearingDateCollection.value.Hearing_";
 
     private ESHelper() {
         // All access through static methods
@@ -159,21 +158,10 @@ public class ESHelper {
     }
 
     public static String getListingVenueAndRangeDateSearchQuery(String dateToSearchFrom, String dateToSearchTo,
-                                                                String venueToSearch, String managingOffice) {
+                                                                String venueToSearch, String venueToSearchMapping) {
         BoolQueryBuilder boolQueryBuilder = boolQuery()
+                .filter(QueryBuilders.termQuery(venueToSearchMapping, venueToSearch))
                 .filter(new RangeQueryBuilder(LISTING_DATE_FIELD_NAME).gte(dateToSearchFrom).lte(dateToSearchTo));
-
-        if (!ALL_VENUES.equals(managingOffice)) {
-            boolQueryBuilder.must(
-                    new MatchQueryBuilder(ELASTICSEARCH_FIELD_HEARING_VENUE_DAY_SCOTLAND, managingOffice));
-        }
-
-        if (!managingOffice.equals(venueToSearch)) {
-            boolQueryBuilder.must(
-                    new MatchQueryBuilder(ELASTICSEARCH_FIELD_HEARING_LOCATION
-                            + managingOffice + ".value.code", venueToSearch));
-        }
-
         return new SearchSourceBuilder()
                 .size(MAX_ES_SIZE)
                 .query(boolQueryBuilder).toString();
