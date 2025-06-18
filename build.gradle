@@ -129,7 +129,7 @@ dependencies {
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
 
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.27.3'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.16.0'
     testImplementation group: 'org.springframework', name: 'spring-test', version: '6.2.8'
     testImplementation group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
