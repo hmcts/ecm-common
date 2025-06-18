@@ -9,12 +9,12 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.52.0'
 }
 
-group 'uk.gov.hmcts.reform'
-version '2.1.6'
+group 'com.github.hmcts'
+version System.getenv('RELEASE_VERSION') ?: "DEV-SNAPSHOT-${new Date().format('yyyyMMdd-HHmmss')}"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 repositories {
