@@ -9,12 +9,12 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.52.0'
 }
 
-group 'uk.gov.hmcts.reform'
-version '2.1.6'
+group 'com.github.hmcts'
+version System.getenv('RELEASE_VERSION') ?: "DEV-SNAPSHOT-${new Date().format('yyyyMMdd-HHmmss')}"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 repositories {
@@ -41,12 +41,14 @@ checkstyle {
 
 // region publishing
 
-task sourcesJar(type: Jar, dependsOn: classes) {
+tasks.register('sourcesJar', Jar) {
+    dependsOn classes
     archiveClassifier.set("sources")
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
+tasks.register('javadocJar', Jar) {
+    dependsOn javadoc
     archiveClassifier.set("javadoc")
     from javadoc.destinationDir
 }
@@ -65,6 +67,17 @@ publishing {
             groupId project.group
             artifactId 'ecm-common'
             version project.version
+        }
+    }
+
+    repositories {
+        maven {
+            name = "AzureArtifacts"
+            url = uri("https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1")
+            credentials {
+                username = System.getenv("AZURE_DEVOPS_ARTIFACT_USERNAME")
+                password = System.getenv("AZURE_DEVOPS_ARTIFACT_TOKEN")
+            }
         }
     }
 }
